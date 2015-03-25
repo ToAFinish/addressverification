@@ -1,0 +1,78 @@
+{!REQUIRESCRIPT("/soap/ajax/31.0/connection.js")} 
+{!REQUIRESCRIPT("/soap/ajax/31.0/apex.js")} 
+
+var RecordIDs = String({!GETRECORDIDS($ObjectType.Office__c)}); 
+var disableButtons = function() 
+{ 
+for(var i = 0; i < AccountButtons.length; i++) 
+{ 
+AccountButtons[i].value = "Verifying..."; 
+AccountButtons[i].className = "btnDisabled"; 
+} 
+} 
+var enableButtons = function() 
+{ 
+for(var i = 0; i < AccountButtons.length; i++) 
+{ 
+AccountButtons[i].value = "Verify Selected Addresses"; 
+AccountButtons[i].className = "btn"; 
+} 
+} 
+if (RecordIDs == null || RecordIDs == '') { 
+alert("Please select at least one record to verify address."); 
+
+}else{ 
+var AccountButtons = new Array(); 
+var buttons = document.getElementsByTagName("input"); 
+for(var i = 0; i < buttons.length; i++) 
+{ 
+if(buttons[i].type == "submit" || buttons[i].type == "button") 
+{ 
+if(buttons[i].value == "Verify Selected Addresses") 
+{ 
+AccountButtons.push(buttons[i]); 
+} 
+} 
+} 
+
+disableButtons(); 
+
+
+try 
+{ 
+sforce.apex.execute("smartystreets.AddressUpdateService", "UpdateAddress", {sTable : 'Office__c', sRecordID : RecordIDs}); 
+window.location = window.location; 
+} 
+catch(error) 
+{ 
+var theAlert = error.toString(); 
+var errorStart = theAlert.indexOf('[Begin]'); 
+var errorEnd = theAlert.indexOf('[End]'); 
+if (errorStart>0 && errorEnd > 0) 
+{ 
+errorStart = errorStart+7; 
+alert(theAlert.substring(errorStart,errorEnd)); 
+} 
+else 
+{ 
+var errorStartFieldValidation = theAlert.indexOf('FIELD_CUSTOM_VALIDATION_EXCEPTION, '); 
+var errorStartFieldAPI = theAlert.indexOf('REQUIRED_FIELD_MISSING, '); 
+var errorEnd = theAlert.indexOf('Class.smartystreets_v2'); 
+if (errorStartFieldValidation > 0 && errorEnd > 0) 
+{ 
+errorStartFieldValidation = errorStartFieldValidation+35; 
+alert('An error has been returned: \n\n' + theAlert.substring(errorStartFieldValidation,errorEnd) + 'This error must be resolved before the address can be verified.'); 
+} 
+else if (errorStartFieldAPI > 0 && errorEnd > 0) 
+{ 
+errorStartFieldAPI = errorStartFieldAPI+24; 
+alert('An error has been returned: \n\n' + theAlert.substring(errorStartFieldAPI,errorEnd) + 'This error must be resolved before the address can be verified.'); 
+} 
+else 
+{ 
+alert('An unknown error was thrown. If the raw error message below does not make sense, please contact To A Finish Support.\n**************************************\n\n' + theAlert); 
+} 
+} 
+enableButtons(); 
+} 
+}
