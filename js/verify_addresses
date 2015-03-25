@@ -1,0 +1,88 @@
+{!REQUIRESCRIPT("/soap/ajax/31.0/connection.js")} 
+{!REQUIRESCRIPT("/soap/ajax/31.0/apex.js")} 
+
+var OfficeId = "{! Office__c.Id }"; 
+var OfficeButtons = new Array(); 
+var buttons = document.getElementsByTagName("input"); 
+
+for(var i = 0; i < buttons.length; i++) 
+{ 
+if(buttons[i].type == "submit" || buttons[i].type == "button") 
+{ 
+if(buttons[i].value == "Verify Address") 
+{ 
+OfficeButtons.push(buttons[i]); 
+} 
+} 
+} 
+
+var disableButtons = function() 
+{ 
+for(var i = 0; i < OfficeButtons.length; i++) 
+{ 
+OfficeButtons[i].value = "Verifying..."; 
+OfficeButtons[i].className = "btnDisabled"; 
+} 
+} 
+
+var enableButtons = function() 
+{ 
+for(var i = 0; i < OfficeButtons.length; i++) 
+{ 
+OfficeButtons[i].value = "Verify Address"; 
+OfficeButtons[i].className = "btn"; 
+} 
+} 
+
+disableButtons(); 
+
+if({!ISNULL(Office__c.Street__c)}) 
+{ 
+alert("Please Enter an Office address before verifying."); 
+enableButtons(); 
+} 
+else if({!ISNULL(Office__c.Zip__c)} && ({!ISNULL(Office__c.City__c)} || {!ISNULL(Office__c.State__c)})) 
+{ 
+alert("Either the City and State OR the Zip Code is required before verifying."); 
+enableButtons(); 
+} 
+else 
+{ 
+try 
+{ 
+sforce.apex.execute("smartystreets.AddressUpdateService", "UpdateAddress", {sTable : 'Office__c', sRecordID : OfficeId}); 
+window.location = window.location; 
+} 
+catch(error) 
+{ 
+var theAlert = error.toString(); 
+var errorStart = theAlert.indexOf('[Begin]'); 
+var errorEnd = theAlert.indexOf('[End]'); 
+if (errorStart>0 && errorEnd > 0) 
+{ 
+errorStart = errorStart+7; 
+alert(theAlert.substring(errorStart,errorEnd)); 
+} 
+else 
+{ 
+var errorStartFieldValidation = theAlert.indexOf('FIELD_CUSTOM_VALIDATION_EXCEPTION, '); 
+var errorStartFieldAPI = theAlert.indexOf('REQUIRED_FIELD_MISSING, '); 
+var errorEnd = theAlert.indexOf('Class.smartystreets'); 
+if (errorStartFieldValidation > 0 && errorEnd > 0) 
+{ 
+errorStartFieldValidation = errorStartFieldValidation+35; 
+alert('An error has been returned: \n\n' + theAlert.substring(errorStartFieldValidation,errorEnd) + 'This error must be resolved before the address can be verified.'); 
+} 
+else if (errorStartFieldAPI > 0 && errorEnd > 0) 
+{ 
+errorStartFieldAPI = errorStartFieldAPI+24; 
+alert('An error has been returned: \n\n' + theAlert.substring(errorStartFieldAPI,errorEnd) + 'This error must be resolved before the address can be verified.'); 
+} 
+else 
+{ 
+alert('An unknown error was thrown. If the raw error message below does not make sense, please contact To A Finish Support.\n**************************************\n\n' + theAlert); 
+} 
+} 
+enableButtons(); 
+} 
+}
