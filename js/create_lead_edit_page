@@ -4,7 +4,7 @@ var SesId = '{!GETSESSIONID()}';
 var result;
 var ObjectName = 'Lead';
 var layoutId = '';
-var rtName = '{!Lead.RecordType}';
+var rtName = 'Standard';
 var count = 0;
 var divNum = 0;
 if (rtName == null || rtName == '') {
