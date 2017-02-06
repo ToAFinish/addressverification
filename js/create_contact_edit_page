@@ -4,7 +4,7 @@ var SesId = '{!GETSESSIONID()}';
 var result;
 var ObjectName = 'Contact';
 var layoutId = '';
-var rtName = '{!Contact.RecordType}';
+var rtName = '';
 var address = '';
 var flag = 0;
 var divNum = 0;
