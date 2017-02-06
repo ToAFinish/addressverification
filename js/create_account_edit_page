@@ -4,7 +4,7 @@ var SesId = '{!GETSESSIONID()}';
 var result;
 var ObjectName = 'Account';
 var layoutId = '';
-var rtName = 'Master';
+var rtName = '';
 var address = '';
 var flag = 0;
 var divNum = 0;
