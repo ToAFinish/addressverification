@@ -10,7 +10,7 @@ var divNum = 0;
 if (rtName == null || rtName == '') {
     rtName = 'Standard';
 }
-rtPName = rtName.replace(/ /g, "");
+var rtPName = rtName.replace(/ /g, "");
 var pageName = 'AV_' + ObjectName + '_' + rtPName;
 var rtId;
 if (rtName == 'Standard') {
@@ -34,7 +34,7 @@ objectDescribeData = sforce.connection.describeSObject(ObjectName);
 var recordTypeMapping = result.getArray("recordTypeMappings");
 for (var i = 0; i < recordTypeMapping.length; i++) {
     var rectId = recordTypeMapping[i].name;
-    rectId = rectId.substring(0, 15);
+    // rectId = rectId.substring(0, 15);
     if (rtId == rectId) {
         //recordTID =  recordTypeMapping[i].recordTypeId;
         layoutId = recordTypeMapping[i].layoutId;

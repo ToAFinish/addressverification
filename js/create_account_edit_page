@@ -11,7 +11,7 @@ var divNum = 0;
 if (rtName == null || rtName == '') {
     rtName = 'Standard';
 }
-rtPName = rtName.replace(/ /g, "");
+var rtPName = rtName.replace(/ /g, "");
 var pageName = 'AV_' + ObjectName + '_' + rtPName;
 var rtId;
 if (rtName == 'Standard') {
