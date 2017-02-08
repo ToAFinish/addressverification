@@ -1,5 +1,5 @@
-{!REQUIRESCRIPT("/soap/ajax/31.0/connection.js")} 
-{!REQUIRESCRIPT("/soap/ajax/31.0/apex.js")} 
+{!REQUIRESCRIPT("/soap/ajax/38.0/connection.js")} 
+{!REQUIRESCRIPT("/soap/ajax/38.0/apex.js")} 
 
 var RecordIDs = String({!GETRECORDIDS($ObjectType.Office__c)}); 
 var disableButtons = function() 

@@ -1,5 +1,5 @@
-{!REQUIRESCRIPT("/soap/ajax/31.0/connection.js")} 
-{!REQUIRESCRIPT("/soap/ajax/31.0/apex.js")} 
+{!REQUIRESCRIPT("/soap/ajax/38.0/connection.js")} 
+{!REQUIRESCRIPT("/soap/ajax/38.0/apex.js")} 
 
 var OfficeId = "{! Office__c.Id }"; 
 var OfficeButtons = new Array(); 
