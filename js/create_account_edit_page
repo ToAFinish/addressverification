@@ -59,6 +59,43 @@ for (var i = 0; i < layoutActivity.length; i++) {
                 if (detailLayoutSection[j].heading == 'Address Information') {
                     body += '\\n\\t\\t</apex:pageBlock>\\n\\t</apex:form>\\n\\t<smartystreets:EditAccountComponent id=\'pgComp\' pageControlle=\'\{\!pageCont}\'/>\\n\\t<apex:form ></apex:form>\\n\\t<apex:form>\\n\\t\\t<apex:pageBlock mode=\'edit\'>'
                     body += '\\n\\t\\t\\t<apex:pageBlockButtons location=\'bottom\'>\\n\\t\\t\\t\\t<apex:commandButton value=\'Save\' id=\'svBtn\' onclick=\'validate(event,false);return false;\'/>\\n\\t\\t\\t\\t<apex:commandButton value=\'Save & New\' onclick=\'validate(event,true);return false;\'/>\\n\\t\\t\\t\\t<apex:commandButton value=\'Cancel\' action=\'\{\!cancel}\' />\\n\\t\\t\\t</apex:pageBlockButtons>';
+					
+					//New logic to handle Address Information Section
+					//Getting the rows of Layout 
+					var layoutRows = detailLayoutSection[j].getArray("layoutRows");
+					console.log('section: ' + layoutRows);
+					for (var k = 0; k < layoutRows.length; k++) {
+						//Getting items inside rows 
+						var layoutItems = layoutRows[k].getArray("layoutItems");
+						for (var l = 0; l < layoutItems.length; l++) {
+							//Getting the layout components inside layoutItems 
+							var layoutComponents = layoutItems[l].getArray("layoutComponents");
+							for (var m = 0; m < layoutComponents.length; m++) {
+								//Getting fields of Layout Components 
+								for (var n = 0; n < objectDescribeData.fields.length; n++) {
+									var field = objectDescribeData.fields[n];
+									if (field.name == layoutComponents[m].value) {
+										if (layoutComponents[m].value != 'BillingAddress' && layoutComponents[m].value != 'ShippingAddress') {
+											count = 1;
+										} else {
+											if (layoutComponents[m].value == 'BillingAddress') {
+												address += 'BA';
+												flag++;
+											}
+											if (layoutComponents[m].value == 'ShippingAddress') {
+												address += 'SA';
+												flag++;
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					// End
+					if (flag == 2) {
+						address = 'BS';
+					}
                     break;
                 }
             }
