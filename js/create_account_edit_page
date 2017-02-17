@@ -4,7 +4,7 @@ var SesId = '{!GETSESSIONID()}';
 var result;
 var ObjectName = 'Account';
 var layoutId = '';
-var rtName = '';
+var rtName = '{!Account.RecordType}';
 var address = '';
 var flag = 0;
 var divNum = 0;
@@ -159,7 +159,7 @@ for (var i = 0; i < layoutActivity.length; i++) {
                                 var field = objectDescribeData.fields[n];
                                 if (field.name == layoutComponents[m].value) {
                                     if (layoutComponents[m].value != 'BillingAddress' && layoutComponents[m].value != 'ShippingAddress') {
-                                        if (detailLayoutSection[j].columns == 1 && layoutComponents[m].displayLines > 1) {
+                                        if (detailLayoutSection[j].columns == 1 && layoutComponents[m].displayLines > 1 && field.type=='textarea') {
                                             if (layoutItems[l].required == 'true') {
                                                 divNum++;
                                                 body += '\\n\\t\\t\\t\\t<apex:inputField value=\'\{\!Account.' + layoutComponents[m].value + '}\' required=\'' + layoutItems[l].required + '\' tabOrderHint=\'' + layoutComponents[m].tabOrder + '\' style=\'width:473px;height:50px;\' onkeypress=\'noenter(event)\' styleClass=\'reqClass\'>\\n\\t\\t\\t\\t\\t<apex:actionSupport event=\'onkeyup\' rerender=\'pg\'/>\\n\\t\\t\\t\\t\\t<div id=\'div' + divNum + '\' style=\'color:#d74c3b;display:none;\' class=\'errorMsg\'>Error: You must enter a value</div>\\n\\t\\t\\t\\t</apex:inputField>';
