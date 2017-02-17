@@ -34,7 +34,7 @@ objectDescribeData = sforce.connection.describeSObject(ObjectName);
 var recordTypeMapping = result.getArray("recordTypeMappings");
 for (var i = 0; i < recordTypeMapping.length; i++) {
     var rectId = recordTypeMapping[i].name;
-    // rectId = rectId.substring(0, 15);
+    //rectId = rectId.substring(0, 15);
     if (rtId == rectId) {
         //recordTID =  recordTypeMapping[i].recordTypeId;
         layoutId = recordTypeMapping[i].layoutId;
@@ -113,7 +113,7 @@ for (var i = 0; i < layoutActivity.length; i++) {
                                             divNum++
                                             body += '\\n\\t\\t\\t\\t<apex:inputField value=\'\{\!Lead.firstName}\' required=\'false\' tabOrderHint=\'' + layoutComponents[m].tabOrder + '\' onkeypress=\'noenter(event)\'>\\n\\t\\t\\t\\t\\t<apex:actionSupport event=\'onkeyup\' rerender=\'pg\'/>\\n\\t\\t\\t\\t</apex:inputField>\\n\\t\\t\\t\\t<apex:pageBlockSectionItem></apex:pageBlockSectionItem>\\n\\t\\t\\t\\t<apex:inputField value=\'\{\!Lead.lastName}\' required=\'' + layoutItems[l].required + '\' tabOrderHint=\'' + layoutComponents[m].tabOrder + '\' onkeypress=\'noenter(event)\' styleClass=\'reqClass\'>\\n\\t\\t\\t\\t\\t<apex:actionSupport event=\'onkeyup\' rerender=\'pg\'/>\\n\\t\\t\\t\\t\\t<div id=\'div' + divNum + '\' style=\'color:#d74c3b;display:none;\' class=\'errorMsg\'>Error: You must enter a value</div>\\n\\t\\t\\t\\t</apex:inputField>'
                                         } else {
-                                            if (detailLayoutSection[j].columns == 1 && layoutComponents[m].displayLines > 1) {
+                                            if (detailLayoutSection[j].columns == 1 && layoutComponents[m].displayLines > 1 && field.type=='textarea') {
                                                 if (layoutItems[l].required == 'true') {
                                                     divNum++;
                                                     body += '\\n\\t\\t\\t\\t<apex:inputField value=\'\{\!Lead.' + layoutComponents[m].value + '}\' required=\'' + layoutItems[l].required + '\' tabOrderHint=\'' + layoutComponents[m].tabOrder + '\' style=\'width:473px;height:50px;\' onkeypress=\'noenter(event)\' styleClass=\'reqClass\'>\\n\\t\\t\\t\\t\\t<apex:actionSupport event=\'onkeyup\' rerender=\'pg\'/>\\n\\t\\t\\t\\t\\t<div id=\'div' + divNum + '\' style=\'color:#d74c3b;display:none;\' class=\'errorMsg\'>Error: You must enter a value</div>\\n\\t\\t\\t\\t</apex:inputField>';
