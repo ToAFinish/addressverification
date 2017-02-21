@@ -182,7 +182,7 @@ for (var i = 0; i < layoutActivity.length; i++) {
                                                     }
                                                 } else {
                                                     if (layoutComponents[m].value == 'OwnerId') {
-                                                        body += '\\n\\t\\t\\t\\t<apex:outputText value=\'\{\!ownerName}\' label=\'Lead Owner\'/>';
+                                                        body += '\\n\\t\\t\\t\\t<apex:outputText value=\'\{\!ownerName}\' label=\'Contact Owner\'/>';
                                                     } else {
                                                         if (layoutItems[l].required == 'true') {
                                                             divNum++;
