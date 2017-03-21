@@ -5,6 +5,8 @@ var result;
 var ObjectName = 'Lead';
 var layoutId = '';
 var rtName = '';
+// USE ONLY IF LEADS HAVE RECORD TYPES
+// var rtName = '{!Lead.RecordType}';
 var count = 0;
 var divNum = 0;
 if (rtName == null || rtName == '') {
