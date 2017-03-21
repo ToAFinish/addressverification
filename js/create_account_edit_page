@@ -5,6 +5,8 @@ var result;
 var ObjectName = 'Account';
 var layoutId = '';
 var rtName = '';
+// TO BE USED ONLY IF RECORD TYPES ARE SET UP FOR ACCOUNTS
+// var rtName = '{!Account.RecordType}';
 var address = '';
 var flag = 0;
 var divNum = 0;
