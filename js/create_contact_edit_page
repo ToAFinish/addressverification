@@ -5,6 +5,8 @@ var result;
 var ObjectName = 'Contact';
 var layoutId = '';
 var rtName = '';
+// USE ONLY IF CONTACTS HAVE RECORD TYPES
+// var rtName = '{!Contact.RecordType}';
 var address = '';
 var flag = 0;
 var divNum = 0;
