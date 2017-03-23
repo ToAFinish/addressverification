@@ -1,0 +1,16 @@
+<aura:component controller="VerifyAddressCustomComponentController" implements="force:lightningQuickAction,force:hasRecordId">
+	<aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="verified" default="false" type="boolean"/>
+    <aura:attribute name="notVerified" default="false" type="boolean"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>	
+    <aura:if isTrue="{!v.verified}">
+        <ui:message title="" severity="confirm" closable="true">
+            <center style="font-size:15px;"> Address Verified.</center>
+        </ui:message>
+    </aura:if>
+    <aura:if isTrue="{!v.notVerified}">
+        <ui:message title="" severity="error" closable="true">
+            <center style="font-size:15px;"> Address Verification Failed - please check the address and try again.</center>
+        </ui:message>
+    </aura:if>
+</aura:component>
