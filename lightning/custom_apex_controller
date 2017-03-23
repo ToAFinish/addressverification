@@ -1,0 +1,13 @@
+public class VerifyAddressCustomComponentController{
+    @AuraEnabled
+    public static String getcallVerifyAddress(String sTable,Id recId){
+        String error = smartystreets.AddressUpdateService.UpdateAddress_v2(sTable,recId);
+        return error;
+    }
+    @AuraEnabled
+    public static Office__c getOffice(Id OffcId){
+        Office__c offc = [SELECT Id,Street__c,State__c,City__c,Zip__c,
+                            Country__c,Address_Verified__c from Office__c where id =:OffcId];
+        return offc;
+    }   
+}
