@@ -1,0 +1,128 @@
+({
+	doInit : function(component, event, helper) {
+		var OffcId = component.get('v.recordId');
+        var LeadButtons = new Array(); 
+        var street = '';
+        var city = '';
+        var state = '';
+        var zip = '';
+        var country = '';
+        var sTable = '';
+        var returnCode = false;
+		
+        var action = component.get("c.getOffice");
+        action.setParams({
+            OffcId : component.get("v.recordId")
+        });
+        action.setCallback(this, function(response){
+            if(component.isValid() && response !== null && response.getState() == 'SUCCESS'){
+                console.log('Resp: '+response.getReturnValue());
+                street = response.getReturnValue().Street__c;
+                city = response.getReturnValue().City__c;
+                state = response.getReturnValue().State__c;
+                zip = response.getReturnValue().Zip__c;
+            }
+            
+            if(street=='' || street==null){
+                console.log('str: '+street);
+                alert("Please Enter an Office address before verifying."); 
+            }
+            else if((zip=='' || zip== null) && (city=='' || city==null || state==null || state==null)){ 
+                alert("Either the City and State OR the Zip Code is required before verifying."); 
+            } 
+            else{ 
+                try{
+                    var action1 = component.get("c.getcallVerifyAddress");
+                    action1.setParams({
+                        recId : component.get("v.recordId"),
+                        sTable : 'Office__c'
+                    });
+                    action1.setCallback(this, function(response){
+                        if(component.isValid() && response !== null && response.getState() == 'SUCCESS'){
+                            var error = response.getReturnValue();  
+                            if(error!=''){
+                                alert(error); 
+                                var dismissActionPanel = $A.get("e.force:closeQuickAction");
+                                dismissActionPanel.fire(); 
+                                $A.get('e.force:refreshView').fire();
+                            } else {
+                                var action2 = component.get("c.getOffice");
+                                action2.setParams({
+                                    OffcId : component.get("v.recordId")
+                                });
+                                action2.setCallback(this, function(response){
+                                    if(component.isValid() && response !== null && response.getState() == 'SUCCESS'){
+                                        
+                                        console.log('Resp: '+response.getReturnValue());
+                                        returnCode = response.getReturnValue().Address_Verified__c ;
+                                        if(returnCode){
+                                			component.set('v.verified',true);
+                                            var dismissActionPanel = $A.get("e.force:closeQuickAction");
+                                            dismissActionPanel.fire(); 
+                                            $A.get('e.force:refreshView').fire();
+                                            var resultsToast = $A.get("e.force:showToast"); 
+                                            resultsToast.setParams({ "title": "Record Updated", "message": "Address Verified." }); 
+                                            resultsToast.fire(); 
+                                        } 
+                                        else {
+                                            
+                                        	component.set('v.notVerified',true);
+                                            var dismissActionPanel = $A.get("e.force:closeQuickAction");
+                                            dismissActionPanel.fire(); 
+                                            $A.get('e.force:refreshView').fire();
+                                            var resultsToast = $A.get("e.force:showToast"); 
+                                            resultsToast.setParams({ "title": "Record Updated", "message": "Address Verification Failed - please check the address and try again." }); 
+                                            resultsToast.fire(); 
+                                        }
+                                    }
+                                });
+                                $A.enqueueAction(action2);
+                            }
+                        }
+                    });
+                    $A.enqueueAction(action1);
+            	}
+                catch(error){ 
+                    var theAlert = error.toString();
+                    var errorStart = theAlert.indexOf('[Begin]');
+                    var errorEnd = theAlert.indexOf('[End]');
+                    if (errorStart>0 && errorEnd > 0) 
+                    {
+                       errorStart = errorStart+7;
+                       alert(theAlert.substring(errorStart,errorEnd));
+                    }
+                    else
+                    {
+                        var errorStartFieldValidation = theAlert.indexOf('FIELD_CUSTOM_VALIDATION_EXCEPTION, ');
+                        var errorStartFieldAPI = theAlert.indexOf('REQUIRED_FIELD_MISSING, ');
+                        var errorEnd = theAlert.indexOf('Class.smartystreets');
+                        if (errorStartFieldValidation > 0 && errorEnd > 0) 
+                        {
+                            errorStartFieldValidation = errorStartFieldValidation+35;
+                            alert('An error has been returned: \n\n' + theAlert.substring(errorStartFieldValidation,errorEnd) + 'This error must be resolved before the address can be verified.');
+                            var dismissActionPanel = $A.get("e.force:closeQuickAction");
+                            dismissActionPanel.fire(); 
+                            $A.get('e.force:refreshView').fire();
+                        }
+                        else if (errorStartFieldAPI > 0 && errorEnd > 0) 
+                        {
+                            errorStartFieldAPI = errorStartFieldAPI+24;
+                            alert('An error has been returned: \n\n' + theAlert.substring(errorStartFieldAPI,errorEnd) + 'This error must be resolved before the address can be verified.');
+                        	var dismissActionPanel = $A.get("e.force:closeQuickAction");
+                            dismissActionPanel.fire();   
+                            $A.get('e.force:refreshView').fire();
+                        }
+                        else
+                        {
+                            alert('An unknown error was thrown.  If the raw error message below does not make sense, please contact To A Finish Support.\n**************************************\n\n' + theAlert);
+                            var dismissActionPanel = $A.get("e.force:closeQuickAction");
+                            dismissActionPanel.fire(); 
+                            $A.get('e.force:refreshView').fire();
+                        }
+                    }
+    			} 
+            }
+        });
+        $A.enqueueAction(action);        
+	}
+})
