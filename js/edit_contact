@@ -13,6 +13,7 @@ if (rtName == null || rtName == '') {
     rtName = 'Standard';
 }
 rtPName = rtName.replace(/ /g, "");
+rtPName = rtPName.replace (/\//g, "_");
 var pageName = 'AV_' + ObjectName + '_' + rtPName;
 var rtId;
 if (rtName == 'Standard') {
