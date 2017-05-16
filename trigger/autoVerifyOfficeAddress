@@ -1,0 +1,49 @@
+/*
+    THIS TRIGGER AUTOMATES THE VERIFICATION OF AN ADDRESS
+    ON A CUSTOM OBJECT (OFFICE__C)
+*/
+trigger autoVerifyOfficeAddress on Office__c (after insert, after update)
+{
+    if(trigger.isAfter){
+        boolean b = trigger.isInsert?true:false;
+        Set<Id> addrModifiedSet = new Set<Id>();
+        try
+        {
+            // Only for UPDATES
+            if(!b){
+                for (Office__c x:Trigger.new) {
+                    If(!x.AddressVerified__c && !x.DoNotVerify__c && x.Street__c != null && 
+                        ((x.City__c != null && x.State__c != null) || x.Zip__c != null)){
+                        addrModifiedSet.add(x.Id);
+                    }      
+                } 
+            }
+            if(checkRecursive.control_CustomBatch && !System.isBatch() && !System.isFuture()){
+                 // check to make sure we can create a new job
+                 if([SELECT count() FROM AsyncApexJob where Status IN ('Queued','Processing','Preparing','Holding')]<100){
+                    smartystreets.BatchAddressVerification bav;
+                    // For INSERTS pass all the records in the trigger context , and for UPDATES only pass those records which have addresses modified.
+                    if(b){
+                        bav = new smartystreets.BatchAddressVerification('select id from Office__c',trigger.newMap.keyset());
+                        Database.executeBatch(bav,50);
+                    } else {
+                        if(addrModifiedSet<>null && addrModifiedSet.size()>0){
+                            bav = new smartystreets.BatchAddressVerification('select id from Office__c',addrModifiedSet);
+                            Database.executeBatch(bav,50);
+                        }
+                    }
+                } else { 
+                    // if not, schedule this same class again in 5 mins
+                    ScheduleBatchOfficeAddressVerification sc = new ScheduleBatchOfficeAddressVerification();
+                    Datetime dt = Datetime.now().addMinutes(5);
+                    String timeForScheduler = dt.format('s m H d M \'?\' yyyy');
+                    Id schedId = System.Schedule('OfficeVerificationQueueRetry'+timeForScheduler,timeForScheduler,sc);
+                }
+            }
+        }
+        catch(exception e)
+        {
+            system.debug('Exception::::'+e);
+        }
+    }
+}
