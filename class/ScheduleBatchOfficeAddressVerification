@@ -4,7 +4,7 @@
 */
 global class ScheduleBatchOfficeAddressVerification implements Schedulable {
    global void execute(SchedulableContext SC) {
-      BatchAddressVerification bp = new BatchAddressVerification('select id from Office__c');
+      smartystreets.BatchAddressVerification bp = new smartystreets.BatchAddressVerification('select id from Office__c');
       database.executebatch(bp);
    }
 }
