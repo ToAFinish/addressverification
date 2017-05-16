@@ -1,0 +1,20 @@
+/*
+    THIS HELPER CLASS IS MADE TO ENSURE MULTIPLE
+    VERIFICATIONS ARE NOT ATTEMPTED ON THE SAME
+    RECORD WHEN VERIFYING USING AUTOMATION
+*/
+public Class checkRecursive{
+    @testVisible
+    private static boolean run = true;
+    public static boolean runOnce(){
+        if(run){
+         run=false;
+         return true;
+        }else{
+            return run;
+        }
+    }
+    // these variables control execution of batch from trigger when updating via batch
+    public static boolean control_CustomBatch = true;
+    public static boolean runTrigger = true;
+}
