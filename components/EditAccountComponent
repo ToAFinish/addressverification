@@ -1,0 +1,460 @@
+<apex:component controller="smartystreets.EditAccountController" allowDML="true" id="cmp" access="global">
+    <apex:attribute name="pageControlle" type="smartystreets.EditAccountController" assignTo="{!pageController}" access="global" description="The controller for the page." />
+     <html>
+        <head>
+            <script src="{!$resource.smartystreets__jquerymin}"></script>
+            <script src="{!$resource.smartystreets__jqueryliveaddressmin}"></script>
+            <script>
+                var authId = "{!authId}";
+                var token = "{!token}";
+                var webkey = "{!key}";
+                var liveaddress = $.LiveAddress({
+                key: webkey,
+                debug: true,
+                target: "US|INTERNATIONAL",
+                autoVerify: false,
+                addresses: [{
+                    address1: '#street-address',
+                    locality: '#city',
+                    administrative_area: '#state',
+                    postal_code: '#zip',
+                    country: '#country'
+                },
+                {
+                    address1: '#sstreet-address',
+                    locality: '#scity',
+                    administrative_area: '#sstate',
+                    postal_code: '#szip',
+                    country: '#scountry'
+                },
+                {
+                    address1: '#cstreet-address',
+                    locality: '#ccity',
+                    administrative_area: '#cstate',
+                    postal_code: '#czip',
+                    country: '#ccountry'
+                }]
+            });
+            </script> 
+            <script>
+               function changeAddress(){
+                   var addr = "{!JSENCODE(showOp)}";
+                   console.log('Address: '+addr);
+                   
+                   if(addr=='BS'){
+                       var city = document.getElementById('city').value ;
+                       var street = document.getElementById('street-address').value ;
+                       var state = document.getElementById('state').value ;
+                       var country = document.getElementById('country').value ;
+                       var zip = document.getElementById('zip').value ;
+                       var scity = document.getElementById('scity').value ;
+                       var sstreet = document.getElementById('sstreet-address').value ;
+                       var sstate = document.getElementById('sstate').value ;
+                       var scountry = document.getElementById('scountry').value ;
+                       var szip = document.getElementById('szip').value ;
+                       var ccity = document.getElementById('ccity').value ;
+                       var cstreet = document.getElementById('cstreet-address').value ;
+                       var cstate = document.getElementById('cstate').value ;
+                       var ccountry = document.getElementById('ccountry').value ;
+                       var czip = document.getElementById('czip').value ;
+                      
+                       document.getElementById('{!$Component.frm.hiddenCity}').value = city;
+                       document.getElementById('{!$Component.frm.hiddenStreet}').value = street;
+                       document.getElementById('{!$Component.frm.hiddenZip}').value = zip;
+                       document.getElementById('{!$Component.frm.hiddenCountry}').value = country;
+                       document.getElementById('{!$Component.frm.hiddenState}').value = state;
+                       document.getElementById('{!$Component.frm.shiddenCity}').value = scity;
+                       document.getElementById('{!$Component.frm.shiddenStreet}').value = sstreet;
+                       document.getElementById('{!$Component.frm.shiddenZip}').value = szip;
+                       document.getElementById('{!$Component.frm.shiddenCountry}').value = scountry;
+                       document.getElementById('{!$Component.frm.shiddenState}').value = sstate;
+                       document.getElementById('{!$Component.frm.chiddenCity}').value = ccity;
+                       document.getElementById('{!$Component.frm.chiddenStreet}').value = cstreet;
+                       document.getElementById('{!$Component.frm.chiddenZip}').value = czip;
+                       document.getElementById('{!$Component.frm.chiddenCountry}').value = ccountry;
+                       document.getElementById('{!$Component.frm.chiddenState}').value = cstate;
+                   }
+                   if(addr=='BA'){
+                       var city = document.getElementById('city').value ;
+                       var street = document.getElementById('street-address').value ;
+                       var state = document.getElementById('state').value ;
+                       var country = document.getElementById('country').value ;
+                       var zip = document.getElementById('zip').value ;
+                       
+                       document.getElementById('{!$Component.frm.hiddenCity}').value = city;
+                       document.getElementById('{!$Component.frm.hiddenStreet}').value = street;
+                       document.getElementById('{!$Component.frm.hiddenZip}').value = zip;
+                       document.getElementById('{!$Component.frm.hiddenCountry}').value = country;
+                       document.getElementById('{!$Component.frm.hiddenState}').value = state;
+                   }
+                   if(addr=='SA'){
+                       var scity = document.getElementById('scity').value ;
+                       var sstreet = document.getElementById('sstreet-address').value ;
+                       var sstate = document.getElementById('sstate').value ;
+                       var scountry = document.getElementById('scountry').value ;
+                       var szip = document.getElementById('szip').value ;
+                       
+                       document.getElementById('{!$Component.frm.shiddenCity}').value = scity;
+                       document.getElementById('{!$Component.frm.shiddenStreet}').value = sstreet;
+                       document.getElementById('{!$Component.frm.shiddenZip}').value = szip;
+                       document.getElementById('{!$Component.frm.shiddenCountry}').value = scountry;
+                       document.getElementById('{!$Component.frm.shiddenState}').value = sstate;
+                   }
+                   if(addr=='CU'){
+                       var ccity = document.getElementById('ccity').value ;
+                       var cstreet = document.getElementById('cstreet-address').value ;
+                       var cstate = document.getElementById('cstate').value ;
+                       var ccountry = document.getElementById('ccountry').value ;
+                       var czip = document.getElementById('czip').value ;
+                       
+                       document.getElementById('{!$Component.frm.chiddenCity}').value = ccity;
+                       document.getElementById('{!$Component.frm.chiddenStreet}').value = cstreet;
+                       document.getElementById('{!$Component.frm.chiddenZip}').value = czip;
+                       document.getElementById('{!$Component.frm.chiddenCountry}').value = ccountry;
+                       document.getElementById('{!$Component.frm.chiddenState}').value = cstate;
+                   }
+               }
+            </script>
+            <script>                
+                window.onload = function() {        
+                
+                    document.getElementById('pg:pgComp:cmp:frm:pb:compSave').style.visibility="hidden";
+                    
+                    var x = document.getElementsByClassName('smarty-tag smarty-tag-grayed');
+                    for(var i=0;i<x.length;i++){
+                        if(x[i].getAttribute('title')=='Address not verified. Click to verify.'){
+                           x[i].parentNode.style.display='none';
+                        }
+                    }
+                    
+                    var addr = "{!JSENCODE(showOp)}";
+                    console.log('Address: '+addr);
+                   
+                    if(addr=='BS'){  
+                        document.getElementById('country').setAttribute('placeholder','');
+                        document.getElementById('city').setAttribute('placeholder','');
+                        document.getElementById('street-address').setAttribute('placeholder','');
+                        document.getElementById('state').setAttribute('placeholder','');
+                        document.getElementById('zip').setAttribute('placeholder','');
+                        document.getElementById('scountry').setAttribute('placeholder','');
+                        document.getElementById('scity').setAttribute('placeholder','');
+                        document.getElementById('sstreet-address').setAttribute('placeholder','');
+                        document.getElementById('sstate').setAttribute('placeholder','');
+                        document.getElementById('szip').setAttribute('placeholder','');
+                        document.getElementById('ccountry').setAttribute('placeholder','');
+                        document.getElementById('ccity').setAttribute('placeholder','');
+                        document.getElementById('cstreet-address').setAttribute('placeholder','');
+                        document.getElementById('cstate').setAttribute('placeholder','');
+                        document.getElementById('czip').setAttribute('placeholder','');
+                    }                          
+                    if(addr=='BA'){  
+                        document.getElementById('country').setAttribute('placeholder','');
+                        document.getElementById('city').setAttribute('placeholder','');
+                        document.getElementById('street-address').setAttribute('placeholder','');
+                        document.getElementById('state').setAttribute('placeholder','');
+                        document.getElementById('zip').setAttribute('placeholder','');
+                    }
+                    if(addr=='SA'){  
+                        document.getElementById('scountry').setAttribute('placeholder','');
+                        document.getElementById('scity').setAttribute('placeholder','');
+                        document.getElementById('sstreet-address').setAttribute('placeholder','');
+                        document.getElementById('sstate').setAttribute('placeholder','');
+                        document.getElementById('szip').setAttribute('placeholder','');
+                    }
+                    if(addr=='CU'){  
+                        document.getElementById('ccountry').setAttribute('placeholder','');
+                        document.getElementById('ccity').setAttribute('placeholder','');
+                        document.getElementById('cstreet-address').setAttribute('placeholder','');
+                        document.getElementById('cstate').setAttribute('placeholder','');
+                        document.getElementById('czip').setAttribute('placeholder','');
+                    }
+                }
+            </script>
+        </head>
+        <body>       
+            <apex:form id="frm">
+                
+                <apex:inputHidden value="{!acc.billingcity}" id="hiddenCity" />
+                <apex:inputHidden value="{!acc.billingstreet}" id="hiddenStreet" />
+                <apex:inputHidden value="{!acc.billingstate}" id="hiddenState" />
+                <apex:inputHidden value="{!acc.billingcountry}" id="hiddenCountry" />
+                <apex:inputHidden value="{!acc.billingpostalcode}" id="hiddenZip" />
+                <apex:inputHidden value="{!acc.shippingcity}" id="shiddenCity" />
+                <apex:inputHidden value="{!acc.shippingstreet}" id="shiddenStreet" />
+                <apex:inputHidden value="{!acc.shippingstate}" id="shiddenState" />
+                <apex:inputHidden value="{!acc.shippingcountry}" id="shiddenCountry" />
+                <apex:inputHidden value="{!acc.shippingpostalcode}" id="shiddenZip" />
+                <apex:inputHidden value="{!acc.City__c}" id="chiddenCity" />
+                <apex:inputHidden value="{!acc.Street__c}" id="chiddenStreet" />
+                <apex:inputHidden value="{!acc.State__c}" id="chiddenState" />
+                <apex:inputHidden value="{!acc.Country__c}" id="chiddenCountry" />
+                <apex:inputHidden value="{!acc.Zip__c}" id="chiddenZip" />
+                <apex:pageBlock mode="Edit" id="pb">
+                    
+                    <apex:outputPanel rendered="{!showOp=='BS'}">
+                        <apex:pageBlockSection columns="2" title="Address Information" id="pbs">
+                           <apex:pageblockSectionItem >
+                                <form>
+                                    <table class="detailList" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                        <tbody>
+                                            <col width="35%"/>
+                                            <col width="65%"/>
+                                            <tr>
+                                                <th class="labelCol">
+                                                    <label>Country:</label>
+                                                </th>
+                                                <td class="data2Col">
+                                                    <input type="text" id="ccountry" value="{!acc.Country__c}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th class="labelCol vfLabelColTextWrap  first ">
+                                                    <label>Street:</label>
+                                                </th>
+                                                <td class="data2Col  first ">
+                                                    <input type="text" id="cstreet-address" value="{!acc.Street__c}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th class="labelCol vfLabelColTextWrap">
+                                                    <label>City:</label>
+                                                </th>
+                                                <td class="data2Col">
+                                                    <input type="text" id="ccity" value="{!acc.City__c}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th class="labelCol vfLabelColTextWrap">
+                                                    <label>State:</label>
+                                                </th>
+                                                <td class="data2Col">
+                                                    <input type="text" id="cstate" value="{!acc.State__c}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th class="labelCol vfLabelColTextWrap">
+                                                    <label>Zip:</label>
+                                                </th>
+                                                <td class="data2Col">
+                                                    <input type="text" id="czip" value="{!acc.Zip__c}"/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </form>
+                           </apex:pageblockSectionItem>
+                           <apex:pageblockSectionItem />
+                           <apex:pageblockSectionItem >
+                                <form>
+                                    <table class="detailList" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                        <tbody>
+                                            <col width="35%"/>
+                                            <col width="65%"/>
+                                            <tr>
+                                                <th class="labelCol">
+                                                    <label>Billing Country:</label>
+                                                </th>
+                                                <td class="data2Col">
+                                                    <input type="text" id="country" value="{!acc.billingcountry}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th class="labelCol vfLabelColTextWrap  first ">
+                                                    <label>Billing Street:</label>
+                                                </th>
+                                                <td class="data2Col  first ">
+                                                    <input type="text" id="street-address" value="{!acc.billingstreet}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th class="labelCol vfLabelColTextWrap">
+                                                    <label>Billing City:</label>
+                                                </th>
+                                                <td class="data2Col">
+                                                    <input type="text" id="city" value="{!acc.billingcity}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th class="labelCol vfLabelColTextWrap">
+                                                    <label>Billing State:</label>
+                                                </th>
+                                                <td class="data2Col">
+                                                    <input type="text" id="state" value="{!acc.billingstate}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th class="labelCol vfLabelColTextWrap">
+                                                    <label>Billing Zip:</label>
+                                                </th>
+                                                <td class="data2Col">
+                                                    <input type="text" id="zip" value="{!acc.billingPostalCode}"/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </form>
+                            </apex:pageblockSectionItem>
+                            <apex:pageblockSectionItem >
+                                <form>
+                                    <table class="detailList" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                        <tbody>
+                                            <col width="35%"/>
+                                            <col width="65%"/>
+                                            <tr>
+                                                <th class="labelCol">
+                                                    <label>Shipping Country:</label>
+                                                </th>
+                                                <td class="data2Col">
+                                                    <input type="text" id="scountry" value="{!acc.shippingcountry}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th class="labelCol vfLabelColTextWrap  first ">
+                                                    <label>Shipping Street:</label>
+                                                </th>
+                                                <td class="data2Col  first ">
+                                                    <input type="text" id="sstreet-address" value="{!acc.shippingstreet}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th class="labelCol vfLabelColTextWrap">
+                                                    <label>Shipping City:</label>
+                                                </th>
+                                                <td class="data2Col">
+                                                    <input type="text" id="scity" value="{!acc.shippingcity}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th class="labelCol vfLabelColTextWrap">
+                                                    <label>Shipping State:</label>
+                                                </th>
+                                                <td class="data2Col">
+                                                    <input type="text" id="sstate" value="{!acc.shippingstate}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th class="labelCol vfLabelColTextWrap">
+                                                    <label>Shipping Zip:</label>
+                                                </th>
+                                                <td class="data2Col">
+                                                    <input type="text" id="szip" value="{!acc.shippingPostalCode}"/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </form>
+                            </apex:pageblockSectionItem>
+                            
+                        </apex:pageBlockSection>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!showOp=='BA'}">
+                        <apex:pageBlockSection columns="1" title="Address Information" id="pbs1">
+                            <form>
+                                <table class="detailList" border="0" cellpadding="0" cellspacing="0">
+                                    <tbody>
+                                        
+                                        <tr>
+                                            <th class="labelCol">
+                                                <label>Billing Country:</label>
+                                            </th>
+                                            <td class="data2Col">
+                                                <input type="text" id="country" value="{!acc.billingcountry}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="labelCol vfLabelColTextWrap  first ">
+                                                <label>Billing Street:</label>
+                                            </th>
+                                            <td class="data2Col  first ">
+                                                <input type="text" id="street-address" value="{!acc.billingstreet}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="labelCol vfLabelColTextWrap">
+                                                <label>Billing City:</label>
+                                            </th>
+                                            <td class="data2Col">
+                                                <input type="text" id="city" value="{!acc.billingcity}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="labelCol vfLabelColTextWrap">
+                                                <label>Billing State:</label>
+                                            </th>
+                                            <td class="data2Col">
+                                                <input type="text" id="state" value="{!acc.billingstate}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="labelCol vfLabelColTextWrap">
+                                                <label>Billing Zip:</label>
+                                            </th>
+                                            <td class="data2Col">
+                                                <input type="text" id="zip" value="{!acc.billingPostalCode}"/>
+                                            </td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </form>
+                            
+                        </apex:pageBlockSection>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!showOp=='SA'}">
+                        <apex:pageBlockSection columns="1" title="Address Information" id="pbs2">
+                            <form>
+                                <table class="detailList" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                    <tbody>
+                                        <tr>
+                                            <th class="labelCol">
+                                                <label>Shipping Country:</label>
+                                            </th>
+                                            <td class="data2Col">
+                                                <input type="text" id="scountry" value="{!acc.shippingcountry}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="labelCol vfLabelColTextWrap  first ">
+                                                <label>Shipping Street:</label>
+                                            </th>
+                                            <td class="data2Col  first ">
+                                                <input type="text" id="sstreet-address" value="{!acc.shippingstreet}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="labelCol vfLabelColTextWrap">
+                                                <label>Shipping City:</label>
+                                            </th>
+                                            <td class="data2Col">
+                                                <input type="text" id="scity" value="{!acc.shippingcity}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="labelCol vfLabelColTextWrap">
+                                                <label>Shipping State:</label>
+                                            </th>
+                                            <td class="data2Col">
+                                                <input type="text" id="sstate" value="{!acc.shippingstate}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="labelCol vfLabelColTextWrap">
+                                                <label>Shipping Zip:</label>
+                                            </th>
+                                            <td class="data2Col">
+                                                <input type="text" id="szip" value="{!acc.shippingPostalCode}"/>
+                                            </td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </form>
+                            
+                        </apex:pageBlockSection>
+                    </apex:outputPanel>
+                    <apex:commandButton action="{!saveRec}" value="Save" onclick="changeAddress();" id="compSave" style="height:0px;"/>
+                </apex:pageBlock>
+            </apex:form>
+        </body>
+    </html>
+</apex:component>
