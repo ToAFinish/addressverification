@@ -1,5 +1,6 @@
 {!REQUIRESCRIPT("/soap/ajax/38.0/connection.js")} 
 {!REQUIRESCRIPT("/soap/ajax/38.0/apex.js")} 
+{!REQUIRESCRIPT("/support/console/40.0/integration.js")} 
 var SesId = '{!GETSESSIONID()}';
 var result;
 var ObjectName = 'Contact';
@@ -224,7 +225,12 @@ for (var i = 0; i < layoutActivity.length; i++) {
             pageName: pageName
         });
         if (result == 'success') {
-            var loc = '/apex/' + pageName + '?id={!Contact.Id}&addrName=' + address;
+            var loc; 
+            if(sforce.console.isInConsole()){
+                loc = '/apex/' + pageName + '?id={!Contact.Id}&addrName=' + address+'&isdtp=vw';
+            } else {
+                loc = '/apex/' + pageName + '?id={!Contact.Id}&addrName=' + address    
+            }
             window.open(loc, '_self');
         } else {
 			if(result=='Unable to Create Page'){ 
