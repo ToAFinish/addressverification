@@ -1,6 +1,6 @@
-{!REQUIRESCRIPT("/soap/ajax/38.0/connection.js")} 
-{!REQUIRESCRIPT("/soap/ajax/38.0/apex.js")} 
-{!REQUIRESCRIPT("/support/console/40.0/integration.js")}
+{!REQUIRESCRIPT("/soap/ajax/42.0/connection.js")} 
+{!REQUIRESCRIPT("/soap/ajax/42.0/apex.js")} 
+{!REQUIRESCRIPT("/support/console/42.0/integration.js")}
 var SesId = '{!GETSESSIONID()}';
 var result;
 var ObjectName = 'Account';
@@ -17,6 +17,9 @@ if (rtName == null || rtName == '') {
 var rtPName = rtName.replace(/ /g, "");
 rtPName = rtPName.replace (/\//g, "_");
 var pageName = 'AV_' + ObjectName + '_' + rtPName;
+if(pageName.length>40)
+pageName=pageName.substring(0,40);
+
 var rtId;
 if (rtName == 'Standard') {
     rtId = 'Master';
@@ -206,15 +209,15 @@ for (var i = 0; i < layoutActivity.length; i++) {
             ObjectName: 'Account',
             pageBody: body,
             pageId: pgId,
-            pageName: pageName
+            pageName: pageName,
         });
         if (result == 'success') {
-	    var loc;
-	    if(sforce.console.isInConsole()){
-	    	loc = '/apex/' + pageName + '?id={!Account.Id}&addrName=' + address+'&isdtp=vw';
-	    } else {
-		loc = '/apex/' + pageName + '?id={!Account.Id}&addrName=' + address;
-	    }
+			var loc;
+			if(sforce.console.isInConsole()){
+				loc = '/apex/' + pageName + '?id={!Account.Id}&addrName=' + address+'&isdtp=vw';
+			} else {
+				loc = '/apex/' + pageName + '?id={!Account.Id}&addrName=' + address;
+			}
             window.open(loc, '_self');
         } else {
 			if(result=='Unable to Create Page'){
