@@ -182,12 +182,22 @@ for (var i = 0; i < layoutActivity.length; i++) {
 											} else {
 												if (layoutComponents[m].value == 'OwnerId') { 
 													body += '\\n\\t\\t\\t\\t<apex:outputText value=\'\{\!ownerName}\' label=\'Account Owner\'/>'; 
-												} else { 
-													if (layoutItems[l].required == 'true') {
-														divNum++;
+												} else {
+														if(field.type == 'picklist' || field.type == 'boolean' || field.type == 'datetime' || field.type == 'date'){
+                                                            if (layoutItems[l].required == 'true') {
+                                                                divNum++;
+                                                                body += '\\n\\t\\t\\t\\t<apex:inputField value=\'\{\!Account.' + layoutComponents[m].value + '}\' required=\'' + layoutItems[l].required + '\' tabOrderHint=\'' + layoutComponents[m].tabOrder + '\' onkeypress=\'noenter(event)\' styleClass=\'reqClass\'>\\n\\t\\t\\t\\t\\t<apex:actionSupport event=\'onchange\' rerender=\'pg\'/>\\n\\t\\t\\t\\t\\t<div id=\'div' + divNum + '\' style=\'color:#d74c3b;display:none;\' class=\'errorMsg\'>Error: You must enter a value</div>\\n\\t\\t\\t\\t</apex:inputField>';
+                                                            } else {
+                                                                body += '\\n\\t\\t\\t\\t<apex:inputField value=\'\{\!Account.' + layoutComponents[m].value + '}\' required=\'' + layoutItems[l].required + '\' tabOrderHint=\'' + layoutComponents[m].tabOrder + '\' onkeypress=\'noenter(event)\'>\\n\\t\\t\\t\\t\\t<apex:actionSupport event=\'onchange\' rerender=\'pg\'/>\\n\\t\\t\\t\\t</apex:inputField>';
+                                                            }
+                                                   	    }
+                                                   	else{												 
+													    if (layoutItems[l].required == 'true') {
+														  divNum++;
 														body += '\\n\\t\\t\\t\\t<apex:inputField value=\'\{\!Account.' + layoutComponents[m].value + '}\' required=\'' + layoutItems[l].required + '\' tabOrderHint=\'' + layoutComponents[m].tabOrder + '\' onkeypress=\'noenter(event)\' styleClass=\'reqClass\'>\\n\\t\\t\\t\\t\\t<apex:actionSupport event=\'onkeyup\' rerender=\'pg\'/>\\n\\t\\t\\t\\t\\t<div id=\'div' + divNum + '\' style=\'color:#d74c3b;display:none;\' class=\'errorMsg\'>Error: You must enter a value</div>\\n\\t\\t\\t\\t</apex:inputField>';
 													} else {
 														body += '\\n\\t\\t\\t\\t<apex:inputField value=\'\{\!Account.' + layoutComponents[m].value + '}\' required=\'' + layoutItems[l].required + '\' tabOrderHint=\'' + layoutComponents[m].tabOrder + '\' onkeypress=\'noenter(event)\'>\\n\\t\\t\\t\\t\\t<apex:actionSupport event=\'onkeyup\' rerender=\'pg\'/>\\n\\t\\t\\t\\t</apex:inputField>';
+													}
 													}
 												}
 											}
@@ -209,15 +219,15 @@ for (var i = 0; i < layoutActivity.length; i++) {
             ObjectName: 'Account',
             pageBody: body,
             pageId: pgId,
-            pageName: pageName,
+            pageName: pageName
         });
         if (result == 'success') {
-			var loc;
-			if(sforce.console.isInConsole()){
-				loc = '/apex/' + pageName + '?id={!Account.Id}&addrName=' + address+'&isdtp=vw';
-			} else {
-				loc = '/apex/' + pageName + '?id={!Account.Id}&addrName=' + address;
-			}
+	    var loc;
+	    if(sforce.console.isInConsole()){
+	    	loc = '/apex/' + pageName + '?id={!Account.Id}&addrName=' + address+'&isdtp=vw';
+	    } else {
+		loc = '/apex/' + pageName + '?id={!Account.Id}&addrName=' + address;
+	    }
             window.open(loc, '_self');
         } else {
 			if(result=='Unable to Create Page'){
