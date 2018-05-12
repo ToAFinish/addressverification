@@ -16,6 +16,9 @@ if (rtName == null || rtName == '') {
 var rtPName = rtName.replace(/ /g, "");
 rtPName = rtPName.replace (/\//g, "_");
 var pageName = 'AV_' + ObjectName + '_' + rtPName;
+if(pageName.length>40)
+pageName=pageName.substring(0,40);
+
 var rtId;
 if (rtName == 'Standard') {
     rtId = 'Master';
