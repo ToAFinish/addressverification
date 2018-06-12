@@ -199,6 +199,8 @@ for (var i = 0; i < layoutActivity.length; i++) {
                                                     } else {
                                                         if (layoutComponents[m].value == 'OwnerId') {
                                                             body += '\\n\\t\\t\\t\\t<apex:outputText value=\'\{\!ownerName}\' label=\'Contact Owner\'/>';
+    	    											} else if (layoutComponents[m].value == 'RecordTypeId') { 
+	    	    											body += '\\n\\t\\t\\t\\t<apex:outputfield value=\'\{\!Contact.RecordTypeId'+ '}\' />'; 
                                                         } else {
                                                             if(field.type=='textarea' || field.type=='boolean' || field.type=='datetime' || field.type=='date'){
                                                                 if (layoutItems[l].required == 'true') {
