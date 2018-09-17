@@ -1,0 +1,25 @@
+@isTest
+
+public class VerifyAddressCustomComponentControllerTest{
+
+  static testMethod void myTest(){
+        
+        smartystreets__SmartySettings__c ss = new smartystreets__SmartySettings__c();
+        ss.name='Active';
+        ss.smartystreets__auth_id__c = '';       // need to fill this out
+        ss.smartystreets__auth_token__c = '';    // need to fill this out
+        ss.smartystreets__Key__c = '';           // optionally fill this out
+        ss.smartystreets__Primary_Verification__c = 'SmartyStreets';
+        insert ss;
+
+        Office__c office = new Office__c();
+        office.name = 'Test Office';
+        insert office;
+        
+        System.assertEquals('Test Office',office.name);
+
+        VerifyAddressCustomComponentController.getOffice(office.id);
+        VerifyAddressCustomComponentController.getcallVerifyAddress('Office__c',office.id);
+    }
+
+}
