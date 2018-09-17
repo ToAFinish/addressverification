@@ -1,6 +1,6 @@
 @isTest
 
-public class VerifyAddressCustomComponentControllerTest{
+public class VerifyAddressCustComponentControllerTest{
 
   static testMethod void myTest(){
         
