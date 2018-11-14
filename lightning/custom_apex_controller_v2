@@ -1,0 +1,16 @@
+public class VerifyAddressCustomComponentController{
+    @AuraEnabled
+    public static String getcallVerifyAddress(String sTable,Id recId){
+        String error = smartystreets.AddressUpdateService.UpdateAddress_v2(sTable,recId);
+        return error;
+    }
+    @AuraEnabled
+    public static npsp__Address__c getnpsp_Address(Id sId){    
+        npsp__Address__c offc = [SELECT Id,npsp__MailingStreet__c,npsp__MailingState__c,
+                                 npsp__MailingCity__c,npsp__MailingPostalCode__c, npsp__MailingCountry__c,
+                                 npsp__Verified__c 
+                                 from npsp__Address__c 
+                                 where id =:sId];
+        return offc;
+    }   
+}
