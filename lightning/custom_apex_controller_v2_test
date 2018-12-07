@@ -1,0 +1,52 @@
+@isTest
+
+public class VerifyAddressCustComponentControllerTest{
+
+  static testMethod void myTest(){
+      	
+		/*
+		 * THIS NEEDS TO BE CONFIGURED IN ORDER TO ACTUALLY WORK
+		 */
+        smartystreets__SmartySettings__c ss = new smartystreets__SmartySettings__c();
+        ss.name='Active';
+        ss.smartystreets__auth_id__c = '';       // need to fill this out
+        ss.smartystreets__auth_token__c = '';    // need to fill this out
+        ss.smartystreets__Key__c = '';           // optionally fill this out
+        ss.smartystreets__Primary_Verification__c = 'SmartyStreets';
+        insert ss;
+
+      	RecordType rt = [select Id from RecordType where DeveloperName = 'HH_Account'];
+      
+        //Add one contact to create household
+      	Account acc = new Account(Name='Test Account');
+        acc.RecordTypeId = rt.Id;
+      	insert acc;
+
+        Contact con = new Contact(FirstName='TEST_FIRSTNAME', LastName='TEST_LASTNAME', AccountId=acc.Id);
+     	insert con;
+
+      	test.startTest();
+
+      	string addressType = 'Work';
+        string street = '100 Main St';
+        string state = 'TX';
+        string postalCode = '77777';
+        string country = 'USA';
+    
+        npsp__Address__c add = new npsp__Address__c(
+            npsp__Household_Account__c=acc.Id,
+            npsp__Address_Type__c = addressType,            
+            npsp__MailingStreet__c = street,
+            npsp__MailingState__c =state,
+            npsp__MailingPostalCode__c = postalCode,
+            npsp__MailingCountry__c = country
+        );
+
+      	insert add;
+    
+        test.stopTest();
+
+        VerifyAddressCustomComponentController.getnpsp_Address(add.id);
+        VerifyAddressCustomComponentController.getcallVerifyAddress('npsp__Address__c',add.id);
+    }
+}
