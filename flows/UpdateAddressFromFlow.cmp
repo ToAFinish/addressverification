@@ -1,4 +1,4 @@
-<aura:component implements="lightning:availableForFlowScreens" access="global" controller="UpdateAddressForFLow">
+<aura:component implements="lightning:availableForFlowScreens" access="global" controller="UpdateAddressFromFlowController">
     
     <aura:attribute name="recordId" type="String" access="global" />
     <aura:attribute name="sObjaddresses" type="object[]"/>
