@@ -21,4 +21,6 @@ In order to use this flow, you will need to set up a few Lightning components an
 6. If it is a new flow, create a new URL button on the object you want to run it from, with a URL something like this (depending on what name you gave it): /flow/Verify?Id={!Account.Id}&retURL={!Account.Id}
 7. Add this button to the layout for your Lightning page layout
 
+NOTE: To run from Lighting, make sure you have the "Enable Lightning runtime for flows" in the "Process Automation Settings" in Setup.
+
 You are now ready to test it out!
