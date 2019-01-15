@@ -9,5 +9,5 @@ In order to use this flow, you will need to set up a few Lightning components an
 5. Go to Flow-drag a screen from palette ,then on the screen click on add field tab and then in the field setting ,in the input subtab set the recordId.
 
 
-![Flow](Flow.png)
+![Flow](FlowSetup.png)
 
