@@ -1,0 +1,136 @@
+<aura:component implements="lightning:availableForFlowScreens" access="global" controller="UpdateAddressForFLow">
+    
+    <aura:attribute name="recordId" type="String" access="global" />
+    <aura:attribute name="sObjaddresses" type="object[]"/>
+    <aura:attribute name="addresses" type="object"/>
+    <aura:attribute name="index" type="string"/>
+    <aura:attribute name="TotalAddress" type="Integer" default="0"/>
+    <aura:attribute name="Error2" type="boolean" access="global" default="false"/>
+    <aura:attribute name="verifiedindex" type="string" default=""/>
+    <aura:attribute name="readyToMove" type="Boolean" default="false"/>
+    <aura:attribute name="doingProcess" type="Boolean" default="false"/>
+    <aura:attribute name="DoneProcess" type="Boolean" default="false"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <!-- HEADER SECTION -->
+    
+    <div class="slds-p-top_medium slds-clearfix">
+        <div class="slds-float_left">
+            <h2><img src="{!$Resource.AVLogo}" alt="A.W. Computing logo"/></h2>
+        </div>
+        <div class="slds-float_right" style="position:relative;">
+            <aura:if isTrue="{!v.screenHelpText!=null}">            
+                <lightning:helptext content="{!v.screenHelpText}" />
+            </aura:if>
+        </div>
+    </div>
+    
+    <!-- MAIN CONTENT-->
+    <aura:if isTrue="{!v.Error2}">
+        <div style="color:red;font-size:15px;margin-bottom:5px;"><center><i>Please Configure Address From Setup</i></center></div>
+    </aura:if>
+    <aura:if isTrue="{!!v.DoneProcess}">
+        <aura:iteration items="{!v.sObjaddresses }" var="firstRow">  
+            <table style="{!firstRow.style}">
+                <tr>
+                    <aura:iteration items="{!firstRow.oneRow}" var="val">                                
+                        <td style="{!val.style+';vertical-align:top'}">
+                            <table>                                                   
+                                <tr>                                         
+                                    <td style="padding-top:8px;"><label for="input-171" class="slds-form-element__label slds-no-flex">{!val.heading}&nbsp;Street</label>
+                                        <input type="text" value="{!val.streetvalue}" class="slds-input" id="{!'s'+val.Index}" onkeyup="{!c.address}"/>
+                                        <div id="{!'street'+val.Index}" style="display:none">
+                                            <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open" style="display:block !important">
+                                                <div class="slds-dropdown slds-dropdown_left"><!--style="margin-top:-14px;"-->
+                                                    <ul class="slds-dropdown__list" role="menu" aria-label="Show More">
+                                                        <aura:iteration items="{!v.addresses }" var="val" indexVar="index">
+                                                            <li class="slds-dropdown__item" role="presentation">
+                                                                <span class="slds-truncate" onclick="{!c.callSuggestion}"  title="Menu Item One" id="{!index}">{!val.text}</span>
+                                                            </li>
+                                                        </aura:iteration>                 
+                                                    </ul>
+                                                </div>          
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <aura:if isTrue="{!val.street2Enabled}">
+                                    <tr>
+                                        <td style="padding-top:8px;">
+                                            <label for="input-171" class="slds-form-element__label slds-no-flex">{!val.heading}&nbsp;Street 2</label>
+                                            <input type="text" value="{!val.street2value}" class="slds-input" id="{!'s2'+val.Index}"/>
+                                        </td>
+                                    </tr>
+                                </aura:if>                                               
+                                <tr>                                           
+                                    <td style="padding-top:8px;">
+                                        <div style="float:left;width:65%">
+                                            <label for="input-171" class="slds-form-element__label slds-no-flex">{!val.heading}&nbsp;City</label>
+                                            <input type="text" value="{!val.cityvalue}" class="slds-input" id="{!'city'+val.Index}" />
+                                        </div>
+                                        <div style="float:right;width:33%">
+                                            <label for="input-171" class="slds-form-element__label slds-no-flex">{!val.heading}&nbsp;State</label>
+                                            <input type="text" value="{!val.statevalue}" class="slds-input" id="{!'state'+val.Index}"  />                                                               
+                                        </div>
+                                    </td>                                
+                                </tr>                            
+                                <tr>                                
+                                    <td style="padding-top:8px;">
+                                        <div style="float:left;width:65%">
+                                            <label for="input-171" class="slds-form-element__label slds-no-flex">{!val.heading}&nbsp;PostalCode</label>
+                                            <input type="text" value="{!val.postalcodevalue}" class="slds-input" id="{!'zip'+val.Index}" />
+                                        </div>
+                                        <div style="float:right;width:33%">
+                                            <label for="input-171" class="slds-form-element__label slds-no-flex">{!val.heading}&nbsp;Country</label>
+                                            <input type="text" value="{!val.countryvalue}" class="slds-input" id="{!'country'+val.Index}"  />
+                                        </div>
+                                    </td>
+                                </tr>                         
+                            </table>
+                        </td>                            
+                    </aura:iteration>
+                </tr>
+            </table>   
+            <div>
+                <div id="ErrorboxMain" style="display:none">             
+                    <div role="dialog" tabindex="-1" aria-labelledby="header99" class="{!'slds-modal slds-fade-in-open '+index}">
+                        <div id="Errorbox" class="slds-modal__container" style="min-width: 15rem !important;max-width:24rem !important;max-height: 10rem !important;margin-top:9rem;margin-left:33px;float:left">                                                  
+                            <div class="slds-modal__header">                                                  
+                                <div id="ErrorboxHeader" class="slds-text-heading--medium" style="font-size:15px !important">YOU DIDN'T ENTER ENOUGH INFORMATION</div>
+                            </div>                                        
+                            <div class="slds-modal__content slds-p-around--medium" style="min-height: 3rem;text-align: center;padding: 0px !important;">
+                                <p id="theMessage"><b></b>
+                                </p>
+                            </div>                                                   
+                            <div class="slds-modal__footer">
+                                <button class="slds-button slds-button--neutral" onclick="{!c.goback}">Go Back</button>
+                                <button class="slds-button slds-button--brand" id="usi" onclick="{!c.asitis}">Use as it is</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-backdrop slds-backdrop--open"></div>                
+                </div>
+            </div>
+        </aura:iteration>
+        
+        <button class="slds-button slds-button_neutral" style="display:none" id="verifyagain" onclick="{!c.reverify}">Cancel</button>
+        <button class="slds-button slds-button_neutral" style="display:none" id="verifyNow" onclick="{!c.finalVerify}">Cancel</button>
+        <button class="slds-button slds-button_brand"  style="display:none" id="updateit" onclick="{!c.handleVerify}">Update</button>    
+        
+        <aura:if isTrue="{!v.doingProcess}">
+            <div class="demo-only" style="height:2px;">
+                <div role="status" class="slds-spinner slds-spinner_medium">
+                    <span class="slds-assistive-text">Loading</span>
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </aura:if>
+        <!-- FOOTER SECTION -->
+        
+        <c:FlowFooter availableActions="{!v.availableActions}" navigateFlowEvent="{!c.handleNavigate}" readyToMove="{!v.readyToMove}" recordId="{!v.recordId}"/>
+    </aura:if>
+    <aura:if isTrue="{!v.DoneProcess}">
+        <div style="margin-top:15px;padding-bottom:15px;text-align:center;font-size:15px;font-weight:bold;">The Address is Successfully Updated,Please Close the window.</div>
+    </aura:if>
+</aura:component>
