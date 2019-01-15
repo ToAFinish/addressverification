@@ -1,0 +1,39 @@
+<aura:component >  
+    <aura:attribute name="availableActions" type="String[]" />
+    <aura:registerEvent name="navigateFlowEvent" type="c:navigateFlow"/> 
+    
+    <aura:attribute name="canPause" type="Boolean" />
+    <aura:attribute name="canBack" type="Boolean" />
+    <aura:attribute name="canNext" type="Boolean" />
+    <aura:attribute name="canFinish" type="Boolean" />
+    <aura:attribute name="readyToMove" type="Boolean"/>
+    <aura:attribute name="recordId" type="String"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    
+    <div aura:id="actionButtonBar" class="slds-clearfix slds-p-top_medium" style="padding-bottom:10px;">
+        
+        <div class="slds-float_left">
+            <aura:if isTrue="{!v.canBack}">
+                <lightning:button aura:id="BACK" label="Previous"
+                                  variant="neutral" onclick="{!c.onButtonPressed}" />
+            </aura:if>
+        </div>
+        <div style="text-align:center">
+            <lightning:button aura:id="UPDATE" label="Update"
+                                  variant="neutral" onclick="{!c.handleVerify}" disabled="{!v.readyToMove}" />              
+            <aura:if isTrue="{!v.canPause}">
+                <lightning:button aura:id="PAUSE" label="Pause"
+                                  variant="neutral" onclick="{!c.onButtonPressed}" disabled="{!!v.readyToMove}" />
+            </aura:if>
+            <aura:if isTrue="{!v.canNext}">
+                <lightning:button aura:id="NEXT" label="Next"
+                                  variant="brand" onclick="{!c.onButtonPressed}" disabled="{!!v.readyToMove}" />
+            </aura:if>
+            <aura:if isTrue="{!v.canFinish}">
+                <lightning:button aura:id="FINISH" label="Done"
+                                  variant="brand" onclick="{!c.onButtonPressed}" disabled="{!!v.readyToMove}" />
+            </aura:if>
+        </div>       
+    </div>
+</aura:component>
