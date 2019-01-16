@@ -55,7 +55,19 @@
             isblank='false';
         else
             isblank='true';
-              
+        
+        var el=document.getElementById('s'+index);  
+        var _x = 0;
+        var _y = 0;
+      
+        try{
+            while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
+                _x += el.offsetLeft - el.scrollLeft;
+                _y += el.offsetTop - el.scrollTop;
+                el = el.offsetParent;
+            }	
+        }catch(e){}
+        
     	{            
             var action = component.get("c.getpostalcode");
             action.setParams({
@@ -70,17 +82,19 @@
             action.setCallback(this, function(response) {            
                 if (response.getState() == "SUCCESS") {            
                     document.getElementById('zip'+index).value=response.getReturnValue(); 
-                    if(response.getReturnValue()!=''){
-                     //   component.set("v.isProcessing",'Yes');  
-                     //   component.set("v.isOneAddressVerfied",'Yes');                   
+                    if(response.getReturnValue()!=''){                             
                         component.set("v.verifiedindex",parseInt(index)+1);                                            
                         //  NOW MAKE THE REVERIY RUN
                         document.getElementById('verifyagain').click();
                     }
                     else{
-                        // OPEN THE ALERT BOX                                                      
-                        document.getElementById("ErrorboxMain").style.display='';
-                        document.getElementById("Errorbox").style.margintop=10+(parseInt(index)*15);
+                        // OPEN THE ALERT BOX   
+                                                              
+                        document.getElementById("ErrorboxMain").style.display='';                        
+                        document.getElementById("Errorbox").style.paddingTop=(_y-20)+'px';   
+                        
+                     //   document.getElementById("Errorbox").style.marginTop=10+(parseInt(index)*15);
+                        
                         if((parseInt(index)+1)%2==0){
                             document.getElementById("Errorbox").style.cssFloat='Right';
                             document.getElementById("Errorbox").style.marginLeft='0px';
