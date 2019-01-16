@@ -12,12 +12,12 @@ In order to use this flow, you will need to set up a few Lightning components an
    3. Click on the "Add A Field" tab, choose the "Lightning Component" element at the bottom, uncheck the "Show Footer" and "Show Header" options.
    4. Click on it, if it isn't visible, and give it a name like "Update"
    5. From the Lightning Component list, select "c:UpdateAddressFromFlow"
-   6. In the "Input" subtab, select the "recordId" Attribute, and enter {!Id} in the Value element
+   6. In the "Input" subtab, select the "recordId" Attribute, and create a new "Read and Write" variable called Id.  Make sure {!Id} is selected as the value element.
+   ![Flow](FlowSetup.png)
    7. Press the OK button
    8. If this is a new flow and this is the only element in the flow, then hover over the element, and press the "Set as Start Element" green arrow in the top-right of the Screen element.
    9. Save the flow and give it a name like "Verify"
    10. Activate the Flow if it is a new flow
-![Flow](FlowSetup.png)
 6. If it is a new flow, create a new URL button on the object you want to run it from, with a URL something like this (depending on what name you gave it): /flow/Verify?Id={!Account.Id}&retURL={!Account.Id}
 7. Add this button to the layout for your Lightning page layout
 
