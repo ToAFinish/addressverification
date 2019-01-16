@@ -16,11 +16,12 @@
             var state = response.getState();
             if (state === "SUCCESS") {                            
                 component.set("v.sObjaddresses", response.getReturnValue()); 
+                console.log(JSON.stringify(response.getReturnValue()));
                 if(response.getReturnValue().length==0){
                      component.set('v.Error2','True');
                 }else{
                     var addresses=component.get('v.sObjaddresses');
-                    var noOfaddress=0;
+                    var noOfaddress=0;                  
                     for(var i=0;i<addresses.length;i++){
                         var oneRow=addresses[i].oneRow; 
                         noOfaddress+=oneRow.length;
