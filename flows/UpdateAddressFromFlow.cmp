@@ -13,10 +13,9 @@
     
     <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
     <!-- HEADER SECTION -->
-    
     <div class="slds-p-top_medium slds-clearfix">
         <div class="slds-float_left">
-            <h2><img src="{!$Resource.AVLogo}" alt="A.W. Computing logo"/></h2>
+            <h2><img src="{!$Resource.smartystreets__AVLogo}" alt="App Logo"/></h2>
         </div>
         <div class="slds-float_right" style="position:relative;">
             <aura:if isTrue="{!v.screenHelpText!=null}">            
