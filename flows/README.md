@@ -1,5 +1,7 @@
 # INSTRUCTIONS
 
+## FLOW VERIFYING/SAVING EXISTING RECORDS
+
 In order to use this flow, you will need to set up a few Lightning components and an event.
 
 1. Make sure you are on version 4.12.2 or later.  If not, email support@toafinish.com with your org id and ask for an update.
@@ -24,3 +26,7 @@ In order to use this flow, you will need to set up a few Lightning components an
 > NOTE: To run from Lighting, make sure you have the "Enable Lightning runtime for flows" in the "Process Automation Settings" in Setup.
 
 You are now ready to test it out!
+
+## FLOW VERIFYING AND ADDRESS WITHOUT SAVING
+
+Need instructions here...
