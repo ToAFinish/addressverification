@@ -1,0 +1,168 @@
+<aura:component  implements="lightning:availableForFlowScreens" controller="VerifyAnAddressCtr" access="global">
+    
+    <aura:attribute name="canPause" type="Boolean" />
+    <aura:attribute name="canBack" type="Boolean" />
+    <aura:attribute name="canNext" type="Boolean" />
+    <aura:attribute name="canFinish" type="Boolean" />
+    <aura:attribute name="doingProcess" type="Boolean" default="false"/>
+    <aura:attribute name="DoneProcess" type="Boolean" default="false"/>
+    
+    <aura:attribute name="blank" type="Boolean" default="false"/>
+    <aura:attribute name="valid" type="Boolean" default="false"/>
+    <aura:attribute name="invalid" type="Boolean" default="false"/>
+    <aura:attribute name="DefaultMess" type="Boolean" default="true"/>
+    <aura:attribute name="result" type="object"/>
+   
+    <aura:attribute name="Street1" type="string"/>
+    <aura:attribute name="Street2" type="string"/>
+    <aura:attribute name="Rest" type="string"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    <div style="background: linear-gradient(225deg,#555 0,#000 100%);color:white;">
+        <!-- HEADER SECTION --><br/>
+    <div class="slds-p-top_medium slds-clearfix header">     
+        <div class="slds-float_left" style="width:60%">
+             <img src="{!$Resource.smartystreets__AVLogo}" alt="App Logo"/>
+             <span style="font-size:25px;float:right;font-weight:bold;color: green;">Single Address Validation</span>
+        </div>
+        <div class="slds-float_right" style="position:relative;width:40%">          
+            <aura:if isTrue="{!v.screenHelpText!=null}">            
+                <lightning:helptext content="{!v.screenHelpText}" />
+            </aura:if>
+        </div>
+    </div>
+    <aura:if isTrue="{!!v.DoneProcess}">
+        <table style="color:white !important">
+        	<tr>
+            	<td style="width:50%;border-right:2px solid #5c5c5c">
+                    <table>                                                           
+                        <tr>                                         
+                            <td style="padding-top:12px;">
+                                <span style="margin-left: 20%;">Street:</span>
+                                <input type="text"  class="slds-input" style="color:black !important;width:60%;float:right;margin-right:10px" id="s"/>              
+                            </td>
+                        </tr>  
+                        <tr>                                         
+                            <td style="padding-top:12px;">
+                                <span style="margin-left: 20%;">Street 2:</span>
+                                <input type="text"  class="slds-input" style="color:black !important;width:60%;float:right;margin-right:10px" id="street2"/>              
+                            </td>
+                        </tr> 
+                        <tr>
+                            <td style="padding-top:12px;">                          
+                                <span style="margin-left: 20%;">City:</span>
+                                <input type="text" class="slds-input" style="color:black !important;width:60%;float:right;margin-right:10px" id="city" />                           
+                            </td> 
+                        </tr>
+                        <tr>
+                            <td style="padding-top:12px;">                        	
+                                 <span style="margin-left: 20%;">State:</span>
+                                <input type="text"  class="slds-input" style="color:black !important;width:60%;float:right;margin-right:10px" id="state"  />                                                                                        
+                            </td>
+                        </tr>
+                        <tr>
+                        	<td style="padding-top:12px;">
+                                <span style="margin-left: 20%;">Postal Code:</span>
+                        		<input type="text"  class="slds-input" style="color:black !important;width:60%;float:right;margin-right:10px" id="zip" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding-top:12px;">
+                                <span style="margin-left: 20%;">Country:</span>
+                                <input type="text"  class="slds-input" style="color:black !important;width:60%;float:right;margin-right:10px" id="country"  />
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td style="width:50%;border-left:2px solid #5c5c5c">
+                    <aura:if isTrue="{!v.DefaultMess}">
+                        <div style="font-size:25px;text-align:center;font-style: italic;"> Awaiting input.</div><br/>
+                        <div style="font-size:20px;text-align:center;padding-left:10%;padding-right:10%">Enter an address in the address form on this page to see your results here</div>
+                    </aura:if>
+                    <aura:if isTrue="{!v.blank}">
+                        <div style="font-size:25px;text-align:center;font-style: italic;"> Awaiting input.</div><br/>
+                        <div style="font-size:20px;text-align:center;padding-left:10%;padding-right:10%">Enter an address in the address form ,<b>the street is blank!</b></div>
+                    </aura:if>
+                    <aura:if isTrue="{!v.valid}">
+                        <div style="padding-top:10%;text-align:center;margin:10px;min-height:300px;min-width:250px;border: 1px solid #60bf2f;border-radius: 2px;;font-size:25px">ADDRESS FOUND
+                            <aura:if isTrue="{!!v.result.isInternational}">
+                                <div style="font-size:15px"><b>Street 1 :</b>{!v.result.matchAddress.street1}</div>
+                                <aura:if isTrue="{!v.result.matchAddress.street2!=''}">
+                                    <div style="font-size:15px"><b>Street 2 :</b>{!v.result.matchAddress.street2}</div>
+                                </aura:if>
+                                <div style="font-size:15px"><b>City State Zip : </b>{!v.result.matchAddress.city} &nbsp;{!v.result.matchAddress.state}&nbsp;{!v.result.matchAddress.postalcode}</div>   
+                            </aura:if>
+                            <aura:if isTrue="{!v.result.isInternational}">
+                                <aura:if isTrue="{!v.result.theAddress.length>1}">
+                                    <div style="font-size:20px;">Mulitple Address match found</div>
+                                    <div style="color:black;font-size: 15px;width: 86%;margin-left: 10%;">
+                                        <lightning:select name="Address" label="" aura:id="adder" value="{!v.result.matchAddress.formatedAddress}">
+                                            <aura:iteration items="{!v.result.theAddress}" var="option">
+                                                <option text="{!option.formatedAddress}" value="{!option.formatedAddress}" />
+                                            </aura:iteration>
+                                        </lightning:select>
+                                    </div>
+                                </aura:if>
+                                <div style="font-size:15px"><b>Street 1 :</b>{!v.result.matchAddress.street1}</div>
+                                <aura:if isTrue="{!v.result.matchAddress.street2!=''}">
+                                    <div style="font-size:15px"><b>Street 2 :</b>{!v.result.matchAddress.street2}</div>
+                                </aura:if>
+                                <div style="font-size:15px"><b>City State Zip : </b>{!v.result.matchAddress.city} &nbsp;{!v.result.matchAddress.state}&nbsp;{!v.result.matchAddress.postalcode} &nbsp;{!v.result.matchAddress.country}</div> 
+                            </aura:if>
+                        </div>
+                    </aura:if>
+                      <aura:if isTrue="{!v.invalid}">
+                          <div style="padding-top: 15%;text-align:center;margin:10px;min-height:300px;min-width:250px;border: 1px solid red;border-radius: 2px;;font-size:25px">UNKNOWN ADDRESS
+                              <div style="font-size:18px;color:#3994e6">You Have Entered Below Address</div>
+                              <div style="font-size:15px"><b>Street 1 :</b>{!v.Street1}</div>
+                              <aura:if isTrue="{!v.Street2!=''}">
+                                  <div style="font-size:15px"><b>Street 2 :</b>{!v.Street2}</div>
+                              </aura:if>
+                              <div style="font-size:15px"><b>City State Zip : </b>{!v.Rest}</div>                             
+                          </div>
+                    </aura:if>
+                </td>
+            </tr>
+        </table>
+      
+        <aura:if isTrue="{!v.doingProcess}">
+            <div class="demo-only" style="height:2px;">
+                <div role="status" class="slds-spinner slds-spinner_medium">
+                    <span class="slds-assistive-text">Loading</span>
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </aura:if>
+        
+        <div aura:id="actionButtonBar" class="slds-clearfix slds-p-top_medium" style="padding-bottom:10px;">
+            
+            <div class="slds-float_left">
+                <aura:if isTrue="{!v.canBack}">
+                    <lightning:button aura:id="BACK" label="Previous"
+                                      variant="neutral" onclick="{!c.onButtonPressed}" />
+                </aura:if>
+            </div>
+            <div style="text-align:center">
+                <lightning:button aura:id="VERIFY" label="Verify"
+                                  variant="neutral" onclick="{!c.handleVerify}" />              
+                <aura:if isTrue="{!v.canPause}">
+                    <lightning:button aura:id="PAUSE" label="Pause"
+                                      variant="neutral" onclick="{!c.onButtonPressed}" />
+                </aura:if>
+                <aura:if isTrue="{!v.canNext}">
+                    <lightning:button aura:id="NEXT" label="Next"
+                                      variant="brand" onclick="{!c.onButtonPressed}" />
+                </aura:if>
+                <aura:if isTrue="{!v.canFinish}">
+                    <lightning:button aura:id="FINISH" label="Done"
+                                      variant="brand" onclick="{!c.onButtonPressed}" />
+                </aura:if>
+            </div>       
+        </div>       
+    </aura:if>
+    <aura:if isTrue="{!v.DoneProcess}">
+        <div style="margin-top:15px;padding-bottom:15px;text-align:center;font-size:15px;font-weight:bold;">Please Close the window.</div>
+    </aura:if>
+    </div>
+</aura:component>
