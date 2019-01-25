@@ -1,0 +1,11 @@
+.THIS .header{
+    margin:10px;
+    margin-top:10px !important;
+    border-bottom: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    background: #f3f2f2;
+    background-clip: padding-box;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
+    border: 1px solid #dddbda;
+    color:black !important;
+}
