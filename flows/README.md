@@ -5,9 +5,9 @@
 In order to use this flow, you will need to set up a few Lightning components and an event.
 
 1. Make sure you are on version 4.12.2 or later.  If not, email support@toafinish.com with your org id and ask for an update.
-2. Create the naviagteFlow Lightning event using the file in this folder
-3. Create the FlowFooter Lightning Component using the files in this folder
-4. Create the UpdateAddressFromFlow Lightning Component using the files in this folder
+2. Create the naviagteFlow Lightning event using the file in the "Saving" folder
+3. Create the FlowFooter Lightning Component using the files in the "Saving" folder
+4. Create the UpdateAddressFromFlow Lightning Component using the files in the "Saving" folder
 5. Build a new Flow - or edit an existing one
    1. Drag a "Screen" element from the palette
    2. Give it a name like "Open Verification Component"
@@ -29,4 +29,22 @@ You are now ready to test it out!
 
 ## FLOW VERIFYING AND ADDRESS WITHOUT SAVING
 
-Need instructions here...
+FLOW VERIFYING AN ADDRESS WITHOUT SAVING
+
+1. Make sure you are on version 4.13 or later. If not, email support@toafinish.com with your org id and ask for an update.
+2. Create the VerifyAnAddress Lightning Component using the files in the "No_Saving" folder
+3. Build a new Flow - or edit an existing one
+	1. Drag a "Screen" element from the palette
+	2. Give it a name like "Verify An Address"
+	3. Uncheck the "Show Footer" and "Show Header" options from General Info.
+	4. Click on the "Add A Field" tab, choose the "Lightning Component" element at the bottom and drag and drop it to the right side. It will show example- [Lightning Component]
+	5. Click on it and give it a name like "Verify" From the Lightning Component list, select "c:VerifyAnAddress"
+	6. Press the OK button
+	7. If this is a new flow and this is the only element in the flow, then hover over the element, and press the "Set as Start Element" green arrow in the top-right of the Screen element.
+	8. Save the flow and give it a name like "Address Verification Plugin"
+	9. Activate the Flow if it is a new flow
+4. You can open flow with url "/flow/smartystreets/Address_Verification_Plugin" ,you will find the Url when you will save a flow.
+
+> NOTE: To run from Lighting, make sure you have the "Enable Lightning runtime for flows" in the "Process Automation Settings" in Setup.
+
+You are now ready to test it out!
