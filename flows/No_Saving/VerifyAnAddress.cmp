@@ -11,8 +11,9 @@
     <aura:attribute name="valid" type="Boolean" default="false"/>
     <aura:attribute name="invalid" type="Boolean" default="false"/>
     <aura:attribute name="DefaultMess" type="Boolean" default="true"/>
+    <aura:attribute name="isError" type="Boolean" default="false"/>
     <aura:attribute name="result" type="object"/>
-   
+    <aura:attribute name="defaultselected" type="string"/>
     <aura:attribute name="Street1" type="string"/>
     <aura:attribute name="Street2" type="string"/>
     <aura:attribute name="Rest" type="string"/>
@@ -96,9 +97,9 @@
                                 <aura:if isTrue="{!v.result.theAddress.length>1}">
                                     <div style="font-size:20px;">Mulitple Address match found</div>
                                     <div style="color:black;font-size: 15px;width: 86%;margin-left: 10%;">
-                                        <lightning:select name="Address" label="" aura:id="adder" value="{!v.result.matchAddress.formatedAddress}">
-                                            <aura:iteration items="{!v.result.theAddress}" var="option">
-                                                <option text="{!option.formatedAddress}" value="{!option.formatedAddress}" />
+                                        <lightning:select name="Address" label="" aura:id="adder" onchange="{!c.onChange}" value="{!v.defaultselected}">
+                                            <aura:iteration items="{!v.result.theAddress}" var="option" indexVar="index">
+                                                <option text="{!option.formatedAddress}" value="{!index}" />
                                             </aura:iteration>
                                         </lightning:select>
                                     </div>
@@ -109,9 +110,10 @@
                                 </aura:if>
                                 <div style="font-size:15px"><b>City State Zip : </b>{!v.result.matchAddress.city} &nbsp;{!v.result.matchAddress.state}&nbsp;{!v.result.matchAddress.postalcode} &nbsp;{!v.result.matchAddress.country}</div> 
                             </aura:if>
+                            <div style="font-size:18px"><b>Status</b>:{!v.result.matchAddress.ReturnCode}</div>
                         </div>
                     </aura:if>
-                      <aura:if isTrue="{!v.invalid}">
+                    <aura:if isTrue="{!v.invalid}">
                           <div style="padding-top: 15%;text-align:center;margin:10px;min-height:300px;min-width:250px;border: 1px solid red;border-radius: 2px;;font-size:25px">UNKNOWN ADDRESS
                               <div style="font-size:18px;color:#3994e6">You Have Entered Below Address</div>
                               <div style="font-size:15px"><b>Street 1 :</b>{!v.Street1}</div>
@@ -119,6 +121,13 @@
                                   <div style="font-size:15px"><b>Street 2 :</b>{!v.Street2}</div>
                               </aura:if>
                               <div style="font-size:15px"><b>City State Zip : </b>{!v.Rest}</div>                             
+                          </div>
+                    </aura:if>
+                    <aura:if isTrue="{!v.isError}">
+                          <div style="padding-top: 10%;text-align:center;margin:10px;min-height:300px;min-width:250px;border: 1px solid red;border-radius: 2px;;font-size:25px">ERROR
+                              <aura:iteration items="{!v.result.errorMessages}" var="er">
+                                  <div>{!er}</div>
+                              </aura:iteration>
                           </div>
                     </aura:if>
                 </td>
