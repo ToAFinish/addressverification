@@ -29,5 +29,19 @@
     handleVerify: function(component, event, helper){
         component.set('v.doingProcess','true');       
         helper.getpostal(component,event,helper);               
+    },
+    onChange: function (cmp, evt, helper) {
+        var theindex=cmp.find('adder').get('v.value');
+       
+        var theAddresses=cmp.get("v.result.theAddress");
+        var theSelectedAddr=theAddresses[theindex];
+        cmp.set("v.result.matchAddress",theSelectedAddr);
+        
+        document.getElementById('city').value=theSelectedAddr.city;
+        document.getElementById('state').value=theSelectedAddr.state;
+        document.getElementById('s').value=theSelectedAddr.street1;
+        document.getElementById('country').value=theSelectedAddr.country;                         
+        document.getElementById('zip').value=theSelectedAddr.postalcode; 
+        document.getElementById('street2').value=theSelectedAddr.street2; 
     }
 })
