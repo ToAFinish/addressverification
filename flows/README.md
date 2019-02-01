@@ -4,7 +4,7 @@
 
 In order to use this flow, you will need to set up a few Lightning components and an event.
 
-1. Make sure you are on version 4.12.2 or later.  If not, email support@toafinish.com with your org id and ask for an update.
+1. Make sure you are on version 5.0 or later.  If not, email support@toafinish.com with your org id and ask for an update.
 2. Create the naviagteFlow Lightning event using the file in the "Saving" folder
 3. Create the FlowFooter Lightning Component using the files in the "Saving" folder
 4. Create the UpdateAddressFromFlow Lightning Component using the files in the "Saving" folder
@@ -27,11 +27,12 @@ In order to use this flow, you will need to set up a few Lightning components an
 
 You are now ready to test it out!
 
+
 ## FLOW VERIFYING AND ADDRESS WITHOUT SAVING
 
 In order to use this flow, you will need to set up a Lightning component.
 
-1. Make sure you are on version 4.13 or later. If not, email support@toafinish.com with your org id and ask for an update.
+1. Make sure you are on version 5.0 or later. If not, email support@toafinish.com with your org id and ask for an update.
 2. Create the VerifyAnAddress Lightning Component using the files in the "No_Saving" folder
 3. Build a new Flow - or edit an existing one
 	1. Drag a "Screen" element from the palette
