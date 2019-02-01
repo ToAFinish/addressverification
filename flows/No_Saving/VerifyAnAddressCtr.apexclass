@@ -1,7 +1,7 @@
 global class VerifyAnAddressCtr{
   
     @AuraEnabled
-    global static AutoComplete.theResult getTheAddress(string street,string street2,string city,string state,string country,string zip){
-         return AutoComplete.getTheAddress(street,street2,city,state,country,zip);
+    global static smartystreets.AutoComplete.theResult getTheAddress(string street,string street2,string city,string state,string country,string zip){
+         return smartystreets.AutoComplete.getTheAddress(street,street2,city,state,country,zip);
     }
 }
