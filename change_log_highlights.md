@@ -112,7 +112,7 @@ Full change log available upon request
 
 * Support for Person Accounts with Flow Verifications
 
-# 4.16
+# 4.17
 2/7/2019
 
 * BETA New entries for International auth id and auth tokens
