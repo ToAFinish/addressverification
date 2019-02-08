@@ -40,11 +40,13 @@ In order to use this flow, you will need to set up a Lightning component.
 	3. Uncheck the "Show Footer" and "Show Header" options from General Info.
 	4. Click on the "Add A Field" tab, choose the "Lightning Component" element at the bottom and drag and drop it to the right side.
 	5. Click on it and give it a name like "Verify" From the Lightning Component list, select "c:VerifyAnAddress"
+	6. In the "Input" subtab, select the "Extra" Attribute, and under Variables, select the "Extra" variable as the value.
+	7. In the "Output" subtab, delete the attribute that is blank so there is no output attribute.
    ![Flow](FlowSetup2.png)
-   	6. Press the OK button
-	7. If this is a new flow and this is the only element in the flow, then hover over the element, and press the "Set as Start Element" green arrow in the top-right of the Screen element.
-	8. Save the flow and give it a name like "Address Verification Plugin"
-	9. Activate the Flow if it is a new flow
+   	8. Press the OK button
+	9. If this is a new flow and this is the only element in the flow, then hover over the element, and press the "Set as Start Element" green arrow in the top-right of the Screen element.
+	10. Save the flow and give it a name like "Address Verification Plugin"
+	11. Activate the Flow if it is a new flow
 4. You can open flow with url "/flow/smartystreets/Address_Verification_Plugin" ,you will find the Url when you will save a flow.
 
 > NOTE: To run from Lighting, make sure you have the "Enable Lightning runtime for flows" in the "Process Automation Settings" in Setup.
