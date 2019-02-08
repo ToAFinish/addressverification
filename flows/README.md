@@ -28,7 +28,7 @@ In order to use this flow, you will need to set up a few Lightning components an
 You are now ready to test it out!
 
 
-## FLOW VERIFYING AND ADDRESS WITHOUT SAVING
+## FLOW VERIFYING AN ADDRESS WITHOUT SAVING
 
 In order to use this flow, you will need to set up a Lightning component.
 
