@@ -40,7 +40,7 @@ In order to use this flow, you will need to set up a Lightning component.
 	3. Uncheck the "Show Footer" and "Show Header" options from General Info.
 	4. Click on the "Add A Field" tab, choose the "Lightning Component" element at the bottom and drag and drop it to the right side.
 	5. Click on it and give it a name like "Verify" From the Lightning Component list, select "c:VerifyAnAddress"
-	6. In the "Input" subtab, select the "Extra" Attribute, and under Variables, select the "Extra" variable as the value.
+	6. In the "Input" subtab, select the "Extra" Attribute, and click the "CREATE NEW -> Variable" option, and then in the popup, give it a name, Data Type should be "Text", Input/Output Type should be "Input Only" and then the Value can be: YES, COUNTY, or COUNTYFIPS.  If you put "YES" it will bring both County and County FIPs into the results. Press "OK" to save.
 	7. In the "Output" subtab, delete the attribute that is blank so there is no output attribute.
    ![Flow](FlowSetupNoSave.png)
    	8. Press the OK button
