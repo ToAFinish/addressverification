@@ -14,7 +14,7 @@
             isblank='false';
         else
             isblank='true';
-        
+       
     	if(isblank=='false'){            
             var action = component.get("c.getTheAddress");
             action.setParams({
@@ -23,7 +23,8 @@
                 "city": city,
                 "state": state,
                 "country": country,
-                "zip": zip               
+                "zip": zip,
+                "extra": component.get("v.Extra")
             });
             
             action.setCallback(this, function(response) {   
