@@ -42,7 +42,7 @@ In order to use this flow, you will need to set up a Lightning component.
 	5. Click on it and give it a name like "Verify" From the Lightning Component list, select "c:VerifyAnAddress"
 	6. In the "Input" subtab, select the "Extra" Attribute, and under Variables, select the "Extra" variable as the value.
 	7. In the "Output" subtab, delete the attribute that is blank so there is no output attribute.
-   ![Flow](FlowSetup2.png)
+   ![Flow](FlowSetupNoSave.png)
    	8. Press the OK button
 	9. If this is a new flow and this is the only element in the flow, then hover over the element, and press the "Set as Start Element" green arrow in the top-right of the Screen element.
 	10. Save the flow and give it a name like "Address Verification Plugin"
