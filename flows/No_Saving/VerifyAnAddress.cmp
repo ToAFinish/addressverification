@@ -1,5 +1,7 @@
 <aura:component  implements="lightning:availableForFlowScreens" controller="VerifyAnAddressCtr" access="global">
     
+    <aura:attribute name="Extra" type="String" access="global" default="NO"/>
+    
     <aura:attribute name="canPause" type="Boolean" />
     <aura:attribute name="canBack" type="Boolean" />
     <aura:attribute name="canNext" type="Boolean" />
@@ -111,6 +113,12 @@
                                 <div style="font-size:15px"><b>City State Zip : </b>{!v.result.matchAddress.city} &nbsp;{!v.result.matchAddress.state}&nbsp;{!v.result.matchAddress.postalcode} &nbsp;{!v.result.matchAddress.country}</div> 
                             </aura:if>
                             <div style="font-size:18px"><b>Status</b>:{!v.result.matchAddress.ReturnCode}</div>
+                       		<aura:if isTrue="{!v.result.matchAddress.extras.length>1}">
+                                <div style="padding-top:5px;font-size:15px"></div>
+                                 <aura:iteration items="{!v.result.matchAddress.extras}" var="ex">
+                                    <span style="font-size:18px"><b>{!ex.extraParamLabel}</b>:{!ex.extraParamValue} <br/></span> 
+                                </aura:iteration>                        
+                            </aura:if>
                         </div>
                     </aura:if>
                     <aura:if isTrue="{!v.invalid}">
