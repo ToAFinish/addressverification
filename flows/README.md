@@ -40,16 +40,16 @@ In order to use this flow, you will need to set up a Lightning component.
 	1. Drag a "Screen" element from the palette
         2. Give it a label name like "Open Verification Component"
 	3. From the list of items on the left, scroll down and select the "VerifyAnAddress" lightning component you created in the 2nd step.  You should now see this new lighting component added inside the original screen element, like this:
-   ![Flow](no_save_step1.png)
+   ![Flow](no_saving_step1.png)
 	4. Click on it and give it a name like "Verify".
 	5. In the "Extra" input field, delete whatever value is there, and choose the "New Resource" option, and then select "Variable".
 	6. In the variable popup, give it a name, Data Type should be "Text", check "Available for Input" (but not output) then the Default Value can be: YES, COUNTY, or COUNTYFIPS.  If you put "YES" it will bring both County and County FIPs into the results. Press "Done" to save:
-   ![Flow](no_save_step2.png)
+   ![Flow](no_saving_step2.png)
 	7. Click back on the header, and then uncheck the "Show Footer" and "Show Header" options from General Info.
-   ![Flow](no_save_step3.png)
+   ![Flow](no_saving_step3.png)
 	8. Press the Done button
 	9. Connect the Screen element that you just created to the previous step in the flow.  If this is a new flow, then you want to connect it to the Start icon.  To do so, hover over the circle at the bottom of the Start icon and drag it to the Screen element and release it.  That should connect it:
-   ![Flow](no_save_step4.png)
+   ![Flow](no_saving_step4.png)
 	10. Save the flow and give it a name like "Address Verification Plugin"
 	11. You can Run the flow using the "Run" button to test it.
 	12. Activate the Flow if it is a new flow
