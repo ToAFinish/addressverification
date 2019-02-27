@@ -6,7 +6,7 @@ In order to use this flow, you will need to set up one ore more Lightning compon
 1. Make sure you are on version 5.0 or later. If not, email support@toafinish.com with your org id and ask for an update.
 2. Create the appropriate Lightning components:
 	1. If you want to set up a flow that verifies existing records, create the <b>naviagteFlow</b>, <b>FlowFooter</b>, and <b>UpdateAddressFromFlow</b> Lightning Components using the files in the "Saving" folder
-	2. If you want to set up a flow that verifies an address without saving records, create the VerifyAnAddress Lightning Component using the files in the "No_Saving" folder
+	2. If you want to set up a flow that verifies an address without saving records, create the <b>VerifyAnAddress</b> Lightning Component using the files in the "No_Saving" folder
 3. Build a new Flow - or edit an existing one
 	1. Drag a "Screen" element from the palette
         2. Give it a label name like "Open Verification Component"
