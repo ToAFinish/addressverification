@@ -117,3 +117,15 @@ Full change log available upon request
 
 * BETA New entries for International auth id and auth tokens
 * New Flow with County and County FIPs Code
+
+# 4.22
+2/27/2019
+
+* SmartyStreets Zipcode API support for just verification of addresses without street populated
+* Internal Zip Data and Lead trigger for automated zip code information populated (no API)
+* Individual Event, Task Verifications of related records
+
+# 4.24
+3/1/2019
+
+* Account and Contact support for Internal Zip Code Data	
