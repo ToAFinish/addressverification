@@ -84,7 +84,22 @@
                                             <input type="text" value="{!val.countryvalue}" class="slds-input" id="{!'country'+val.Index}"  />
                                         </div>
                                     </td>
-                                </tr>                         
+                                </tr>         
+                                <tr>
+                                	<td>
+                                        <div class="slds-form-element">
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-checkbox">
+                                                    <input type="checkbox" name="options" id="{!'need'+val.Index}" value="{!'need'+val.Index}" />
+                                                    <label class="slds-checkbox__label" for="{!'need'+val.Index}">
+                                                        <span class="slds-checkbox_faux"></span>
+                                                        <span class="slds-form-element__label">Do Not Verify</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
                             </table>
                         </td>                            
                     </aura:iteration>
@@ -114,7 +129,7 @@
         
         <button class="slds-button slds-button_neutral" style="display:none" id="verifyagain" onclick="{!c.reverify}">Cancel</button>
         <button class="slds-button slds-button_neutral" style="display:none" id="verifyNow" onclick="{!c.finalVerify}">Cancel</button>
-        <button class="slds-button slds-button_brand"  style="display:none" id="updateit" onclick="{!c.handleVerify}">Update</button>    
+        <button class="slds-button slds-button_brand"  style="display:none" id="updateit" onclick="{!c.handleVerify}">Verify and Update</button>    
         
         <aura:if isTrue="{!v.doingProcess}">
             <div class="demo-only" style="height:2px;">
