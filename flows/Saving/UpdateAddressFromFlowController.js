@@ -60,6 +60,7 @@
         helper.addSuggestions(component, event, helper);
     },
     handleVerify: function(component, event, helper){
+        
         component.set('v.doingProcess','true');
         var verifiedIndex=component.get('v.verifiedindex');
         
@@ -78,18 +79,19 @@
             $A.enqueueAction(component.get('c.reverify'));
         }      
     },
-    reverify:function(component,event,helper){   
-        component.set('v.doingProcess','true');
+    reverify:function(component,event,helper){          
+         component.set('v.doingProcess','true');
         // THIS WILL RUN FOR SECOND ADDERSS OR REVERIY THE ADDRESS             
         var index= component.get("v.verifiedindex");
         var noOfaddress=component.get('v.TotalAddress');
         var close='true';       
-           
+       
         if(index<noOfaddress){             
             helper.getpostal(component,event,helper); 
             close='false';
-        }
+        }   
         if((parseInt(index)==noOfaddress-1 || parseInt(index)==noOfaddress) && close=='true'){
+            
             document.getElementById("ErrorboxMain").style.display='none';
             helper.saveAddressAfterSucess(component,event,helper);
         } 
@@ -127,7 +129,8 @@
             document.getElementById('verifyagain').click();
         }
     },
-    finalVerify:function(component,event,helper){          
+    finalVerify:function(component,event,helper){   
+      
         var action = component.get("c.getverified");
         action.setParams({ recordid : component.get("v.recordId") });
         action.setCallback(this, function(response) {
