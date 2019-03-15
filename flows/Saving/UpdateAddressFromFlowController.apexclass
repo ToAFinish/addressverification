@@ -1,20 +1,23 @@
 public class UpdateAddressFromFlowController{
-
+    
+    
     @AuraEnabled
-    public static list<smartystreets.AutoComplete.allAddress> getallAddressRowWise (string recordId){
-        return smartystreets.AutoComplete.getallAddressRowWise(recordid);
+    public static list<AutoComplete.allAddress> getallAddressRowWise (string recordId){
+        return AutoComplete.getallAddressRowWise(recordid);
     }        
     
     @AuraEnabled
-    public static List <smartystreets.AutoComplete.addresses>  getaddresses(string prefix){
-        return smartystreets.AutoComplete.getaddresses(prefix);
+    public static List <AutoComplete.addresses>  getaddresses(string prefix){
+        return AutoComplete.getaddresses(prefix);
     }
     
     @AuraEnabled
     public static string getpostalcode(string street,string street2,string city,string state,string country,string zip){
-        return smartystreets.AutoComplete.getpostalcode(street,street2,city,state,country,zip);
+        return AutoComplete.getpostalcode(street,street2,city,state,country,zip);
     }
-
+   
+   
+   
     @AuraEnabled
     public static void getUpdateOnAddress(string recordid,string addresswrapper){
        
@@ -22,18 +25,24 @@ public class UpdateAddressFromFlowController{
             id rId=id.valueof(recordId);
             String objectName = rId.getSObjectType().getDescribe().getName();
             sobject obj=rId.getSObjectType().newSobject(rId);            
-            List<smartystreets.AutoComplete.allAddress> alladdress =  (List<smartystreets.AutoComplete.allAddress>) System.JSON.deserialize(addresswrapper,List<smartystreets.AutoComplete.allAddress>.class);
+            List<AutoComplete.allAddress> alladdress =  (List<AutoComplete.allAddress>) System.JSON.deserialize(addresswrapper,List<AutoComplete.allAddress>.class);
            
-            for(smartystreets.AutoComplete.allAddress row:alladdress){
-                for(smartystreets.AutoComplete.sObjectAddresses afv:row.onerow){
-                    obj.put(afv.streetfield,afv.streetvalue);
-                    obj.put(afv.cityfield,afv.cityvalue);
-                    obj.put(afv.statefield,afv.statevalue);
-                    obj.put(afv.countryfield,afv.countryvalue);
-                    obj.put(afv.postalcodefield,afv.postalcodevalue);
+            for(AutoComplete.allAddress row:alladdress){
+                for(AutoComplete.sObjectAddresses afv:row.onerow){
+                    if(!afv.IsSelectedToVerify){
+                        obj.put(afv.streetfield,afv.streetvalue);
+                        obj.put(afv.cityfield,afv.cityvalue);
+                        obj.put(afv.statefield,afv.statevalue);
+                        obj.put(afv.countryfield,afv.countryvalue);
+                        obj.put(afv.postalcodefield,afv.postalcodevalue);
+                                                             
+                        if(afv.street2Enabled){
+                            obj.put(afv.street2field,afv.street2value);
+                        }
+                    }
                     
-                    if(afv.street2Enabled){
-                        obj.put(afv.street2field,afv.street2value);
+                    if(afv.DoNotVerifyField!=null && afv.DoNotVerifyField!=''){
+                        obj.put(afv.DoNotVerifyField,afv.IsSelectedToVerify);
                     }
                 }
             }
@@ -41,11 +50,13 @@ public class UpdateAddressFromFlowController{
             
         }
     }
-
+    
     @AuraEnabled
     public static void getverified(string recordid){
         id rId=id.valueof(recordId);
         String objectName = rId.getSObjectType().getDescribe().getName();    
-        SmartyStreets.AddressUpdateService.UpdateAddress_v2(objectName,string.valueof(rid));        
+        AddressUpdateService.UpdateAddress_v2(objectName,string.valueof(rid));        
     }
+   
+    
 }
