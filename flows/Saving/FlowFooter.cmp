@@ -20,7 +20,7 @@
             </aura:if>
         </div>
         <div style="text-align:center">
-            <lightning:button aura:id="UPDATE" label="Update"
+            <lightning:button aura:id="UPDATE" label="Verify and Update"
                                   variant="neutral" onclick="{!c.handleVerify}" disabled="{!v.readyToMove}" />              
             <aura:if isTrue="{!v.canPause}">
                 <lightning:button aura:id="PAUSE" label="Pause"
