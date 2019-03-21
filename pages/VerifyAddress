@@ -1,0 +1,4 @@
+<apex:page standardController="Office__c" sidebar="false">
+    <!-- replace "Office__c" with the API name of the object you want to verify -->
+    <c:VerifyAddresses />
+</apex:page>
