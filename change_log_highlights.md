@@ -129,3 +129,9 @@ Full change log available upon request
 3/1/2019
 
 * Account and Contact support for Internal Zip Code Data	
+
+# 4.27
+3/14/2019
+
+* Long State Names feature option added to Setup page
+* Optional Long State Names feature on Autocomplete
