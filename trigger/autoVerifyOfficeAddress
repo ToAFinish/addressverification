@@ -18,7 +18,7 @@ trigger autoVerifyOfficeAddress on Office__c (after insert, after update)
                     }      
                 } 
             }
-            if(checkRecursive.control_CustomBatch && !System.isBatch() && !System.isFuture()){
+            if(smartystreets.checkRecursive.control_CustomBatch1 && !System.isBatch() && !System.isFuture()){
                  // check to make sure we can create a new job
                  if([SELECT count() FROM AsyncApexJob where Status IN ('Queued','Processing','Preparing','Holding')]<100){
                     smartystreets.BatchAddressVerification bav;
