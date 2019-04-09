@@ -5,8 +5,8 @@
         var street = '';
         var city = '';
         var state = '';
-        var zip = '';
         var country = '';
+        var zip = '';
         var sTable = '';
         var returnCode = false;
 		
@@ -17,18 +17,33 @@
         action.setCallback(this, function(response){
             if(component.isValid() && response !== null && response.getState() == 'SUCCESS'){
                 console.log('Resp: '+response.getReturnValue());
-                street = response.getReturnValue().Street__c;
-                city = response.getReturnValue().City__c;
-                state = response.getReturnValue().State__c;
-                zip = response.getReturnValue().Zip__c;
+                street = response.getReturnValue().smartystreets__Street__c;
+                city = response.getReturnValue().smartystreets__City__c;
+                state = response.getReturnValue().smartystreets__State__c;
+                zip = response.getReturnValue().smartystreets__Zip__c;
             }
             
             if(street=='' || street==null){
                 console.log('str: '+street);
-                alert("Please Enter an Office address before verifying."); 
+            //    alert("Please Enter an Office address before verifying."); 
+                
+                var dismissActionPanel = $A.get("e.force:closeQuickAction");
+                dismissActionPanel.fire(); 
+                $A.get('e.force:refreshView').fire();
+                
+                var resultsToast = $A.get("e.force:showToast"); 
+                resultsToast.setParams({"type":"warning","mode": "sticky", "title": "Street Missing", "message": "Please Enter an Office address before verifying." }); 
+                resultsToast.fire(); 
             }
             else if((zip=='' || zip== null) && (city=='' || city==null || state==null || state==null)){ 
-                alert("Either the City and State OR the Zip Code is required before verifying."); 
+             //   alert("Either the City and State OR the Zip Code is required before verifying."); 
+             	 var dismissActionPanel = $A.get("e.force:closeQuickAction");
+                dismissActionPanel.fire(); 
+                $A.get('e.force:refreshView').fire();
+                
+                var resultsToast = $A.get("e.force:showToast"); 
+                resultsToast.setParams({"type":"warning","mode": "sticky", "title": "Street Missing", "message": "Either the City and State OR the Zip Code is required before verifying." }); 
+                resultsToast.fire(); 
             } 
             else{ 
                 try{
@@ -41,10 +56,15 @@
                         if(component.isValid() && response !== null && response.getState() == 'SUCCESS'){
                             var error = response.getReturnValue();  
                             if(error!=''){
-                                alert(error); 
+                              //  alert(error); 
                                 var dismissActionPanel = $A.get("e.force:closeQuickAction");
                                 dismissActionPanel.fire(); 
                                 $A.get('e.force:refreshView').fire();
+                                
+                                var resultsToast = $A.get("e.force:showToast"); 
+                                resultsToast.setParams({"type":"error","mode": "sticky", "title": "Verification Failed", "message": error });
+                                resultsToast.fire();
+                                
                             } else {
                                 var action2 = component.get("c.getOffice");
                                 action2.setParams({
@@ -54,30 +74,45 @@
                                     if(component.isValid() && response !== null && response.getState() == 'SUCCESS'){
                                         
                                         console.log('Resp: '+response.getReturnValue());
-                                        returnCode = response.getReturnValue().Address_Verified__c ;
+                                        returnCode = response.getReturnValue().smartystreets__Address_Verified__c ;
+                                        
                                         if(returnCode){
                                 			component.set('v.verified',true);
                                             var dismissActionPanel = $A.get("e.force:closeQuickAction");
                                             dismissActionPanel.fire(); 
                                             $A.get('e.force:refreshView').fire();
                                             var resultsToast = $A.get("e.force:showToast"); 
-                                            resultsToast.setParams({ "title": "Record Updated", "message": "Address Verified." }); 
+                                            resultsToast.setParams({"type":"success","title": "Record Updated", "message": "Address Verified." }); 
                                             resultsToast.fire(); 
                                         } 
                                         else {
-                                            
+                                     
                                         	component.set('v.notVerified',true);
                                             var dismissActionPanel = $A.get("e.force:closeQuickAction");
                                             dismissActionPanel.fire(); 
                                             $A.get('e.force:refreshView').fire();
                                             var resultsToast = $A.get("e.force:showToast"); 
-                                            resultsToast.setParams({ "title": "Record Updated", "message": "Address Verification Failed - please check the address and try again." }); 
+                                            resultsToast.setParams({"type":"error","title": "Record Updated", "message": "Address Verification Failed - please check the address and try again." }); 
                                             resultsToast.fire(); 
                                         }
+                                    }else{
+                                         var dismissActionPanel = $A.get("e.force:closeQuickAction");
+                                        dismissActionPanel.fire(); 
+                                        $A.get('e.force:refreshView').fire();
+                                        var resultsToast = $A.get("e.force:showToast"); 
+                                        resultsToast.setParams({"type":"error","mode": "sticky", "title": "Verification Failed", "message": "The Verification Callback Failed" });
+                                        resultsToast.fire(); 
                                     }
                                 });
                                 $A.enqueueAction(action2);
                             }
+                        }else{
+                            var dismissActionPanel = $A.get("e.force:closeQuickAction");
+                            dismissActionPanel.fire(); 
+                            $A.get('e.force:refreshView').fire();
+                            var resultsToast = $A.get("e.force:showToast"); 
+                            resultsToast.setParams({"type":"error","mode": "sticky", "title": "Verification Failed", "message": "The Verification Callback Failed" });
+                            resultsToast.fire(); 
                         }
                     });
                     $A.enqueueAction(action1);
