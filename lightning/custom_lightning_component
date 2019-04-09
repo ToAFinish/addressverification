@@ -1,4 +1,4 @@
-<aura:component controller="VerifyAddressCustomComponentController" implements="force:lightningQuickAction,force:hasRecordId">
+<aura:component controller="smartystreets.VerifyAddressCustomComponentController" implements="force:lightningQuickAction,force:hasRecordId">
 	<aura:attribute name="recordId" type="Id" />
     <aura:attribute name="verified" default="false" type="boolean"/>
     <aura:attribute name="notVerified" default="false" type="boolean"/>
