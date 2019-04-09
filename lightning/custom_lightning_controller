@@ -17,10 +17,10 @@
         action.setCallback(this, function(response){
             if(component.isValid() && response !== null && response.getState() == 'SUCCESS'){
                 console.log('Resp: '+response.getReturnValue());
-                street = response.getReturnValue().smartystreets__Street__c;
-                city = response.getReturnValue().smartystreets__City__c;
-                state = response.getReturnValue().smartystreets__State__c;
-                zip = response.getReturnValue().smartystreets__Zip__c;
+                street = response.getReturnValue().Street__c;
+                city = response.getReturnValue().City__c;
+                state = response.getReturnValue().State__c;
+                zip = response.getReturnValue().Zip__c;
             }
             
             if(street=='' || street==null){
@@ -74,7 +74,7 @@
                                     if(component.isValid() && response !== null && response.getState() == 'SUCCESS'){
                                         
                                         console.log('Resp: '+response.getReturnValue());
-                                        returnCode = response.getReturnValue().smartystreets__Address_Verified__c ;
+                                        returnCode = response.getReturnValue().Address_Verified__c ;
                                         
                                         if(returnCode){
                                 			component.set('v.verified',true);
