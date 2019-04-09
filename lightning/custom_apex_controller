@@ -9,9 +9,9 @@ public class VerifyAddressCustomComponentController{
         }
     }
     @AuraEnabled
-    public static smartystreets__Office__c getOffice(Id OffcId){
-        smartystreets__Office__c offc = [SELECT Id,smartystreets__Street__c,smartystreets__State__c,smartystreets__City__c,smartystreets__Zip__c,
-                            smartystreets__Country__c,smartystreets__Address_Verified__c from smartystreets__Office__c where id =:OffcId];
+    public static Office__c getOffice(Id OffcId){
+        Office__c offc = [SELECT Id,Street__c,State__c,City__c,Zip__c,
+                            Country__c,Address_Verified__c from Office__c where id =:OffcId];
         return offc;
     }   
 }
