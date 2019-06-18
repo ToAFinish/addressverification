@@ -3,8 +3,13 @@
     A CUSTOM OBJECT (OFFICE__C)
 */
 global class ScheduleBatchOfficeAddressVerification implements Schedulable {
+   Public set<id> ids=new set<id>();
+   Public ScheduleBatchOfficeAddressVerification(){}
+   Public ScheduleBatchOfficeAddressVerification (set<id> recids){
+       ids=recids;
+   }
    global void execute(SchedulableContext SC) {
-      smartystreets.BatchAddressVerification bp = new smartystreets.BatchAddressVerification('select id from Office__c');
-      database.executebatch(bp);
+      smartystreets.BatchAddressVerification bp = new smartystreets.BatchAddressVerification('select id from Office__c',ids);
+      database.executebatch(bp,50);
    }
 }
