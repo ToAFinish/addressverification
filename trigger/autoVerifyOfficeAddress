@@ -34,7 +34,9 @@ trigger autoVerifyOfficeAddress on Office__c (after insert, after update)
                     }
                 } else { 
                     // if not, schedule this same class again in 5 mins
-                    ScheduleBatchOfficeAddressVerification sc = new ScheduleBatchOfficeAddressVerification();
+                    set<id> recids=b?trigger.newMap.keyset():addrModifiedSet;
+
+                    ScheduleBatchCSAddressVerification sc = new ScheduleBatchCSAddressVerification(recids);
                     Datetime dt = Datetime.now().addMinutes(5);
                     String timeForScheduler = dt.format('s m H d M \'?\' yyyy');
                     Id schedId = System.Schedule('OfficeVerificationQueueRetry'+timeForScheduler,timeForScheduler,sc);
