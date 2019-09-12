@@ -1,9 +1,10 @@
-@isTest
+@isTest (SeeAllData=true)
 
 public class VerifyAddressCustComponentControllerTest{
 
   static testMethod void myTest(){
         
+        /*  NOT NEEDED IF SeeAllData=true IS USED
         smartystreets__SmartySettings__c ss = new smartystreets__SmartySettings__c();
         ss.name='Active';
         ss.smartystreets__auth_id__c = '';       // need to fill this out
@@ -11,6 +12,7 @@ public class VerifyAddressCustComponentControllerTest{
         ss.smartystreets__Key__c = '';           // optionally fill this out
         ss.smartystreets__Primary_Verification__c = 'SmartyStreets';
         insert ss;
+        */
 
         Office__c office = new Office__c();
         office.name = 'Test Office';
