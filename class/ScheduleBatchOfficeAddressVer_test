@@ -1,0 +1,21 @@
+@istest
+(SeeAllData = true)
+private class ScheduleBatchOfficeAddressVer_test 
+{
+    @isTest
+    public static void ScheduleBatchOfficeAddressVer_test()
+    {
+        Test.startTest();
+
+        // SAMPLE TEST CODE
+        Office__c pa = new Office__c();
+        pa.Name = 'Test Office';
+        pa.Street1__c = '100 W Main Street';
+        pa.City__c = 'Dallas';
+        pa.State__c = 'TX';
+        insert pa;
+        
+        String jobId = System.schedule('test_addressverification','0 0 0 3 9 ? 2022', new ScheduleBatchOfficeAddressVerification());
+        Test.stopTest();
+    }
+}
