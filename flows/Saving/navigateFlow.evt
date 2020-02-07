@@ -1,3 +1,4 @@
+<!-- DO NOT INCLUDE THIS LINE: ------ NOTICE, THIS IS A LIGHTNING EVENT, NOT A LIGHTHING COMPONENT -->
 <aura:event type="APPLICATION" >
    <aura:attribute name="action" type="String"/>
 </aura:event>
