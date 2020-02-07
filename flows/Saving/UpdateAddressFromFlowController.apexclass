@@ -2,18 +2,18 @@ public class UpdateAddressFromFlowController{
     
     
     @AuraEnabled
-    public static list<AutoComplete.allAddress> getallAddressRowWise (string recordId){
-        return AutoComplete.getallAddressRowWise(recordid);
+    public static list<SmartyStreets.AutoComplete.allAddress> getallAddressRowWise (string recordId){
+        return SmartyStreets.AutoComplete.getallAddressRowWise(recordid);
     }        
     
     @AuraEnabled
-    public static List <AutoComplete.addresses>  getaddresses(string prefix){
-        return AutoComplete.getaddresses(prefix);
+    public static List <SmartyStreets.AutoComplete.addresses>  getaddresses(string prefix){
+        return SmartyStreets.AutoComplete.getaddresses(prefix);
     }
     
     @AuraEnabled
     public static string getpostalcode(string street,string street2,string city,string state,string country,string zip){
-        return AutoComplete.getpostalcode(street,street2,city,state,country,zip);
+        return SmartyStreets.AutoComplete.getpostalcode(street,street2,city,state,country,zip);
     }
    
    
@@ -25,10 +25,10 @@ public class UpdateAddressFromFlowController{
             id rId=id.valueof(recordId);
             String objectName = rId.getSObjectType().getDescribe().getName();
             sobject obj=rId.getSObjectType().newSobject(rId);            
-            List<AutoComplete.allAddress> alladdress =  (List<AutoComplete.allAddress>) System.JSON.deserialize(addresswrapper,List<AutoComplete.allAddress>.class);
+            List<SmartyStreets.AutoComplete.allAddress> alladdress =  (List<SmartyStreets.AutoComplete.allAddress>) System.JSON.deserialize(addresswrapper,List<SmartyStreets.AutoComplete.allAddress>.class);
            
-            for(AutoComplete.allAddress row:alladdress){
-                for(AutoComplete.sObjectAddresses afv:row.onerow){
+            for(SmartyStreets.AutoComplete.allAddress row:alladdress){
+                for(SmartyStreets.AutoComplete.sObjectAddresses afv:row.onerow){
                     if(!afv.IsSelectedToVerify){
                         obj.put(afv.streetfield,afv.streetvalue);
                         obj.put(afv.cityfield,afv.cityvalue);
@@ -55,7 +55,7 @@ public class UpdateAddressFromFlowController{
     public static void getverified(string recordid){
         id rId=id.valueof(recordId);
         String objectName = rId.getSObjectType().getDescribe().getName();    
-        AddressUpdateService.UpdateAddress_v2(objectName,string.valueof(rid));        
+        SmartyStreets.AddressUpdateService.UpdateAddress_v2(objectName,string.valueof(rid));        
     }
    
     
