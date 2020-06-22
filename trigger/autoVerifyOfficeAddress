@@ -3,5 +3,5 @@
     ON A CUSTOM OBJECT (OFFICE__C)
 */
 trigger autoVerifyOfficeAddress on Office__c (before insert, before update, after insert, after update) {
-    new AutoVerificationServices().HandleAutoVerify('Office__c');
+    new smartystreets.AutoVerificationServices().HandleAutoVerify('Office__c');
 }
