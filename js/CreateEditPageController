@@ -1,0 +1,20 @@
+global class CreateEditPageController{
+     webservice static string getsObjectField(string sObjectName){
+        map <String, Schema.SObjectType> schemaMap = Schema.getGlobalDescribe();
+        map <String, Schema.SObjectField> fieldMap = schemaMap.get(sObjectName).getDescribe().fields.getMap();
+        list<FieldInfo> fdInfos=new list<FieldInfo>();
+        for(Schema.SObjectField sfield : fieldMap.Values()){
+            schema.describefieldresult dfield = sfield.getDescribe();
+            FieldInfo fi=new FieldInfo();
+            fi.name=dfield.getname();
+            fi.label=dfield.getlabel();
+            fdInfos.add(fi);
+        }
+        return JSON.serialize(fdInfos);
+    }
+    
+    public class FieldInfo{
+        public string name;
+        public string label;
+    }
+}
