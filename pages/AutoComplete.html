@@ -1,0 +1,125 @@
+<apex:page standardController="Office__c" extensions="OfficeAutocompleteExt">
+    <html>
+        <head>
+            <script src="{!$resource.jquerymin}"></script>
+            <script src="{!$resource.jqueryliveaddressmin}"></script>
+            <script>
+                var authId = "{!authId}";
+                var token = "{!token}";
+                var webkey = "{!key}";
+                var liveaddress = $.LiveAddress({
+                key: webkey,
+                debug: true,
+                target: "US|INTERNATIONAL",
+                autoVerify: false,
+                addresses: [{
+                    address1: '#street-address',
+                    locality: '#city',
+                    administrative_area: '#state',
+                    postal_code: '#zip',
+                    country: '#country'
+                }]
+            });
+            </script> 
+            <script>
+               function changeAddress(){
+                   var city = document.getElementById('city').value ;
+                   var street = document.getElementById('street-address').value ;
+                   var state = document.getElementById('state').value ;
+                   var country = document.getElementById('country').value ;
+                   var zip = document.getElementById('zip').value ;
+                  
+                   document.getElementById('{!$Component.frm.hiddenCity}').value = city;
+                   document.getElementById('{!$Component.frm.hiddenStreet}').value = street;
+                   document.getElementById('{!$Component.frm.hiddenZip}').value = zip;
+                   document.getElementById('{!$Component.frm.hiddenCountry}').value = country;
+                   document.getElementById('{!$Component.frm.hiddenState}').value = state;
+                                     
+               }
+            </script>
+            <script>                
+                window.onload = function() {        
+                                  
+                    document.getElementById('country').setAttribute('placeholder','');
+                    document.getElementById('city').setAttribute('placeholder','');
+                    document.getElementById('street-address').setAttribute('placeholder','');
+                    document.getElementById('state').setAttribute('placeholder','');
+                    document.getElementById('zip').setAttribute('placeholder','');
+                      
+                    var x = document.getElementsByClassName('smarty-tag smarty-tag-grayed');
+                    for(var i=0;i<x.length;i++){
+                        if(x[i].getAttribute('title')=='Address not verified. Click to verify.'){
+                           x[i].parentNode.style.display='none';
+                        }
+                    }
+                    
+                }
+            </script>
+        </head>
+        <body>      
+            <apex:pageMessages ></apex:pageMessages> 
+            <apex:form id="frm">
+                <apex:actionFunction name="callSaveRec" action="{!saveRec}"/>
+                <apex:inputHidden value="{!offc.City__c}" id="hiddenCity" />
+                <apex:inputHidden value="{!offc.Street__c}" id="hiddenStreet" />
+                <apex:inputHidden value="{!offc.State__c}" id="hiddenState" />
+                <apex:inputHidden value="{!offc.Country__c}" id="hiddenCountry" />
+                <apex:inputHidden value="{!offc.Zip__c}" id="hiddenZip" />
+                <apex:pageBlock mode="Edit" id="pb">
+                    <apex:pageBlockSection columns="1" title="Information" id="pbs">   
+                        <apex:inputField value="{!offc.name}" required="true"/>
+                        <form>
+                            <table class="detailList" border="0" cellpadding="0" cellspacing="0">
+                                <tbody>
+                                    <tr>
+                                        <th class="labelCol vfLabelColTextWrap">
+                                            <label>Country</label>
+                                        </th>
+                                        <td class="data2Col">
+                                            <input type="text" id="country" value="{!offc.Country__c}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="labelCol vfLabelColTextWrap  first ">
+                                            <label>Street</label>
+                                        </th>
+                                        <td class="data2Col  first ">
+                                            <input type="text" id="street-address" value="{!offc.Street__c}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="labelCol vfLabelColTextWrap">
+                                            <label>City</label>
+                                        </th>
+                                        <td class="data2Col">
+                                            <input type="text" id="city" value="{!offc.City__c}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="labelCol vfLabelColTextWrap">
+                                            <label>State</label>
+                                        </th>
+                                        <td class="data2Col">
+                                            <input type="text" id="state" value="{!offc.State__c}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="labelCol vfLabelColTextWrap">
+                                            <label>Zip</label>
+                                        </th>
+                                        <td class="data2Col">
+                                            <input type="text" id="zip" value="{!offc.Zip__c}"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                    </apex:pageBlockSection>
+                    <apex:pageBlockButtons >
+                        <apex:commandButton action="{!saveOffcRec}" value="Save" onclick="changeAddress();" id="compSave" oncomplete="callSaveRec();"/>
+                    </apex:pageBlockButtons>
+                </apex:pageBlock>
+            </apex:form>
+        </body>
+    </html>
+</apex:page>
