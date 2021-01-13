@@ -1,0 +1,5 @@
+<aura:component implements="flexipage:availableForRecordHome,force:lightningQuickActionWithoutHeader,force:hasRecordId,force:hasSObjectName">
+    <aura:attribute name="sObjectName" type="String" access="global" description="The parent sObject Name"/>
+    <aura:attribute name="recordId" type="String" access="global" description="The parent record Id"/>
+    <c:AutoCompleteConnector sObjectName="{!v.sObjectName}" recordId="{!v.recordId}" currentsObjectInfo="OBJECT"></c:AutoCompleteConnector>
+</aura:component>
