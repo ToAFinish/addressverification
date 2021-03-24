@@ -1,6 +1,6 @@
-public class OverrideAVTrigger{
+public class OverrideAVTriggerContact{
     
-    public static void callAVTrigger(){
+    public static void callAVTriggerContact(){
         // MAKE SURE YOU DISABLE ALL FUNCTIONALITY FOR THE CURRENT sOBJECT FROM SETUP
         // THEN CREATE THE JSON WITH FUNCTIONALITY YOU WANT
         OverrideSetup os=new OverrideSetup();
