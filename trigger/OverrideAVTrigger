@@ -1,0 +1,61 @@
+public class OverrideAVTrigger{
+    
+    public static void callAVTrigger(){
+        // MAKE SURE YOU DISABLE ALL FUNCTIONALITY FOR THE CURRENT sOBJECT FROM SETUP
+        // THEN CREATE THE JSON WITH FUNCTIONALITY YOU WANT
+        OverrideSetup os=new OverrideSetup();
+        os.sobjectName='Contact';
+        os.ignoreUserId=null;
+        //Ignore UserId IS NULL, SO EVEN IF SETUP HAS USER ID, IT WILL USE NULL
+        os.override_IgnoreUserId=true;
+        os.isRecheckEnabled=false;
+        os.override_IsRecheckEnabled=true;
+        os.largeDatabase=false;
+        os.override_LargeDatabase=true;
+        os.isTriggerOff=false;
+        os.override_IsTriggerOff=true;
+        os.isAutoVerify=true;
+        os.override_IsAutoVerify=true;
+        //TRIGGER WILL USE THE Restrict Reverifications FROM SETUP
+        os.override_IsRestrictReverifications=false;
+        os.isAutoverifyContactswithAccountInfo=false;
+        os.override_IsAutoverifyContactswithAccountInfo=true;
+        os.isExpirationDays=0;
+        os.override_IsExpirationDays=true;
+        
+        string jsonForTrigger=JSON.serialize(os);
+        system.debug('**************BEFORE CALLING TRIGGER HANDLER ');
+        system.debug(os);
+        new Smartystreets.AutoVerificationServices().HandleAutoVerify(jsonForTrigger);
+    }
+    
+    class OverrideSetup{
+        string sobjectName;
+        string ignoreUserId;
+        boolean override_IgnoreUserId;
+        boolean isRecheckEnabled;
+        boolean override_IsRecheckEnabled;
+        boolean largeDatabase;
+        boolean override_LargeDatabase;
+        boolean isTriggerOff;
+        boolean override_IsTriggerOff;
+        boolean isAutoVerify;
+        boolean override_IsAutoVerify;
+        boolean isRestrictReverifications;
+        boolean override_IsRestrictReverifications;
+        boolean isAutoverifyContactswithAccountInfo;
+        boolean override_IsAutoverifyContactswithAccountInfo;
+        decimal isExpirationDays;
+        boolean override_IsExpirationDays;
+        OverrideSetup(){
+            override_IgnoreUserId=false;
+            override_IsRecheckEnabled=false;
+            override_LargeDatabase=false;
+            override_IsTriggerOff=false;
+            override_IsAutoVerify=false;
+            override_IsRestrictReverifications=false;
+            override_IsAutoverifyContactswithAccountInfo=false;
+            override_IsExpirationDays=false;
+        }
+    }
+}
