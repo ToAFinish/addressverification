@@ -1,6 +1,7 @@
 public class OverrideAVTriggerContact{
     
-    public static void callAVTriggerContact(){
+    //PASS THE RECORD ID FROM LOCAL TRIGGER - STOP BEFORE TRIGGER
+    public static void callAVTriggerContact(set<id> procesIt){
         // MAKE SURE YOU DISABLE ALL FUNCTIONALITY FOR THE CURRENT sOBJECT FROM SETUP
         // THEN CREATE THE JSON WITH FUNCTIONALITY YOU WANT
         OverrideSetup os=new OverrideSetup();
@@ -16,6 +17,7 @@ public class OverrideAVTriggerContact{
         os.override_IsTriggerOff=true;
         os.isAutoVerify=true;
         os.override_IsAutoVerify=true;
+
         //TRIGGER WILL USE THE Restrict Reverifications FROM SETUP
         os.override_IsRestrictReverifications=false;
         os.isAutoverifyContactswithAccountInfo=false;
@@ -23,6 +25,11 @@ public class OverrideAVTriggerContact{
         os.isExpirationDays=0;
         os.override_IsExpirationDays=true;
         
+        //DO NOT CHECK IF ADDRESS FIELDS CHANGE AND NEED VERIFICATION, ALWAYS VERIFY 
+        os.doNotCheckFieldChange=true;
+        os.stopBeforeTrigger=true;
+        os.override_RecordsForVerification=true;
+        os.recordForVerification=procesIt;
         string jsonForTrigger=JSON.serialize(os);
         system.debug('**************BEFORE CALLING TRIGGER HANDLER ');
         system.debug(os);
@@ -47,6 +54,11 @@ public class OverrideAVTriggerContact{
         boolean override_IsAutoverifyContactswithAccountInfo;
         decimal isExpirationDays;
         boolean override_IsExpirationDays;
+        boolean stopBeforeTrigger;
+        boolean doNotCheckFieldChange;
+        boolean override_RecordsForVerification;
+        set<id> recordForVerification;
+
         OverrideSetup(){
             override_IgnoreUserId=false;
             override_IsRecheckEnabled=false;
@@ -56,6 +68,10 @@ public class OverrideAVTriggerContact{
             override_IsRestrictReverifications=false;
             override_IsAutoverifyContactswithAccountInfo=false;
             override_IsExpirationDays=false;
+            stopBeforeTrigger=false;
+            doNotCheckFieldChange=false;
+            override_RecordsForVerification=false;
+            recordForVerification=new set<id>();
         }
     }
 }
