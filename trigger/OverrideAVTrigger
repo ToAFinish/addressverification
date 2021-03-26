@@ -1,0 +1,33 @@
+trigger avContactTrigger on Contact (before insert, before update, after insert, after update) {
+
+    set<id> recordsToVerify=new set<id>();
+    if(trigger.isbefore && trigger.isUpdate){
+        for(contact con:trigger.new){
+            // SET WHATEVER CRITERIA YOU WANT ON THIS LINE AND THE SAME CRITERIA BELOW IN THE "AFTER"SECTION
+            if((con.Lastname == 'Test' || con.Firstname == 'Test') && con.smartystreets__Mailing_Verified__c != true) {
+                //IF LAST VERIFIED IS NOT CHANGED THAT MEANS CONTACT NOT UPDATED AFTER VERIFICATION
+                if(con.smartystreets__Mailing_Last_Verified__c==trigger.oldmap.get(con.id).smartystreets__Mailing_Last_Verified__c){
+                    con.smartystreets__Mailing_Do_Not_Verify__c=false;
+                    con.smartystreets__Mailing_Verified__c=false;
+                }
+                if(con.smartystreets__Other_Last_Verified__c==trigger.oldmap.get(con.id).smartystreets__Other_Last_Verified__c){
+                    con.smartystreets__Other_Do_Not_Verify__c=false;
+                    con.smartystreets__Other_Verified__c=false;
+                }
+            }
+        }
+    }else if(trigger.isafter){
+        for(contact con:trigger.new){
+            // SET WHATEVER CRITERIA YOU WANT ON THIS LINE AND THE SAME CRITERIA ABOVE IN THE "BEFORE"SECTION
+            if((con.Lastname == 'Test' || con.Firstname == 'Test') && con.smartystreets__Mailing_Verified__c != true) {
+                if(con.smartystreets__Mailing_Verified__c==false) 
+                    recordsToVerify.add(con.id);
+                if(con.smartystreets__Other_Verified__c==false)
+                    recordsToVerify.add(con.id);
+             }
+        }
+    }
+    // RUN THE VERIFICATION
+    OverrideAVTriggerContact.callAVTriggerContact(recordsToVerify);
+
+}
