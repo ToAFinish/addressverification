@@ -1,0 +1,18 @@
+@isTest
+public class autoVerifyOfficeAddressTest{
+
+/*
+
+  THIS IS JUST A SAMPLE TEST CLASS WITH MINIMUM CODE
+
+*/
+
+  static testMethod void myUnitTest(){
+
+        Parcel__c office = new Parcel__c();
+        office.State__c = 'TX';
+        insert office;
+
+        System.assertEquals('TX',office.State__c);
+    }
+}
