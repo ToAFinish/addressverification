@@ -9,7 +9,7 @@ public class autoVerifyOfficeAddressTest{
 
   static testMethod void myUnitTest(){
 
-        Parcel__c office = new Parcel__c();
+        Office__c office = new Office__c();
         office.State__c = 'TX';
         insert office;
 
