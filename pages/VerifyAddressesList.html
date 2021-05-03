@@ -1,0 +1,9 @@
+<apex:page 
+	standardController="Office__c" 
+extensions="smartystreets.VerifySelectedAddressesExt"
+	recordSetVar="leads" 
+	sidebar="false" 
+	showHeader="false">
+    	<smartystreets:VerifyAddressesList 
+    		Controller="{!setCon}" />
+</apex:page>
