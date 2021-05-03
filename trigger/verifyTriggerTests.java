@@ -1,5 +1,5 @@
 @isTest
-public class autoVerifyOfficeAddressTest{
+public class verifyTriggerTests{
 
 /*
 
