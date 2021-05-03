@@ -1,23 +1,25 @@
 # FILE DESCRIPTION
 
-## VerifyAddress.html
+### VerifyAddress.html
+### VerifyAddressList.html
 
-Sample Visualforce page to verify custom object addresses in Salesforce Classic.
+Sample Visualforce pages to verify custom object addresses in Salesforce Classic, and in a list (including Lightning).
 
-## AutoComplete.html
+### VerifyEmail.html
+### VerifyEmailList.html
 
-Sample Visualforce page to be used for inserting records into a custom object.  Uses the Autocomplete Javascript library.
+Sample Visualforce page to verify custom object emails in Salesforce Classic, and in a list (including Lightning).
 
-## Autocomplete.js
+### VerifyPhone.html
+### VerifyPhoneList.html
 
-Sample Controller for the "AutoComplete.html" Visualforce page.
+Sample Visualforce page to verify custom object phone numbers in Salesforce Classic, and in a list (including Lightning).
 
-## jQueryLiveAddressMin.js
+## AUTOCOMPLETE
 
-Sample Javascript library for accessing the SmartyStreets Autocomplete API.
+### AutoComplete.html
+### Autocomplete.js
+### jQueryLiveAddressMin.js
+### jQueryMin.js
 
-## jQueryMin.js
-
-JQuery library.  Please use an updated version of jQuery MIN library in production.
-
-
+Sample Visualforce page (with controller) to be used for inserting records into a custom object.  Uses the Autocomplete Javascript libraries also included.
