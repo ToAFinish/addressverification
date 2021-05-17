@@ -1,0 +1,29 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" >
+    <aura:attribute name="recordId" type="String" />
+    <!-- EXTRA FIELDS THAT ARE NOT BASIC ADDRESS FIELD -->
+    <aura:attribute name="additionfields" type="list" />
+    <!-- VAR TO CONROLL SAVE BUTTON WHEN AUTOCOMPLETE SEARCH IS ON -->
+    <!-- USED WITH onautocomplete TOTALLY OPTIONAL -->
+    <aura:attribute name="autocompleteloading" type="boolean" />
+    <aura:attribute name="isValidated" type="boolean" default="false" />
+    <aura:attribute name="reset" type="boolean" default="false" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <div style="padding-right:50px;padding-left:50px;">
+        <lightning:card title="Account And Location">
+            <lightning:accordion aura:id="accordion" activeSectionName="A" allowMultipleSectionsOpen="true">
+                <!--  THIS IS AN EXAMPLE USING THE ACCOUNT OBJECT AS THE PARENT OF THE CHILD ADDRESS OBJECT -->
+                <lightning:accordionSection name="A" label="New Account">
+                    <div style="padding:20px">
+                        <lightning:recordForm aura:id="accountform" objectApiName="Account" columns="2" layoutType="Full" onsubmit="{!c.handleSubmit}" onsuccess="{!c.handleSuccess}" oncancel="{!c.handlecancel}"/>
+                    </div>
+                </lightning:accordionSection>
+            </lightning:accordion>
+        </lightning:card>
+        <div style="padding-bottom:100px;padding-top:10px">
+            <aura:if isTrue="{!!v.reset}">
+                <smartystreets:autocompleteExtension objectName="XXX__c" additionfields="{!v.additionfields}" onautocomplete="{!c.handleAutoComplete}" onvalidated="{!c.handleValidated}" aura:id="autocomplete" onsave="{!c.handlesave}"></smartystreets:autocompleteExtension>
+            </aura:if>
+        </div>
+    </div>
+</aura:component>
