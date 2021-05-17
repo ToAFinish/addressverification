@@ -1,0 +1,17 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" >
+	<aura:attribute name="recordId" type="String" />
+    <!-- EXTRA FIELDS THAT ARE NOT BASIC ADDRESS FIELD -->
+    <aura:attribute name="additionfields" type="list" />
+    <!-- VAR TO CONROLL SAVE BUTTON WHEN AUTOCOMPLETE SEARCH IS ON -->
+    <!-- USED WITH onautocomplete TOTALLY OPTIONAL -->
+    <aura:attribute name="autocompleteloading" type="boolean" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <smartystreets:autocompleteExtension objectName="XXX__c" additionfields="{!v.additionfields}" onautocomplete="{!c.handleAutoComplete}" onvalidated="{!c.handleValidated}" aura:id="autocomplete" onsave="{!c.handlesave}"></smartystreets:autocompleteExtension>
+    
+    <aura:if isTrue="{!!v.autocompleteloading}">
+        <div style="text-align:center;margin-top:20px">
+            <button onclick="{!c.save}" class="slds-button slds-button_success">Save</button>
+        </div>
+    </aura:if>
+</aura:component>
