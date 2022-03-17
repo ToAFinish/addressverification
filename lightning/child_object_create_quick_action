@@ -3,5 +3,7 @@
     <aura:attribute name="recordId" type="String" access="global" description="The parent record Id"/>
     <!-- CHANGE THE "OBJECT" NAME BELOW TO THE API NAME OF THE CHILD OBJECT and THE LOOKUP FIELD NAME -->
     <!-- Example, if for the Contact object, use: "Contact-AccountId"                                 -->
+    <!-- After version 6.24.11, you can also determine if the component dumps the user in the child   -->
+    <!-- record (the default) or if they remain on the parent record. Usage = redirectTo="parent".    -->
     <smartystreets:AutoCompleteConnector sObjectName="{!v.sObjectName}" recordId="{!v.recordId}" currentsObjectInfo="OBJECT-FIELD"></smartystreets:AutoCompleteConnector>
 </aura:component>
