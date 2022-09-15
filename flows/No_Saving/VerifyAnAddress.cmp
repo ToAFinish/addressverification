@@ -20,6 +20,13 @@
     <aura:attribute name="Street2" type="string"/>
     <aura:attribute name="Rest" type="string"/>
     
+    <!-- THE SUGGESTED ADDRESSES-->
+    <aura:attribute name="addresses" type="object"/>
+    <aura:attribute name="index" type="string"/>
+    <aura:attribute name="searchInfo" type="object" />
+    <aura:attribute name="liIndex" type="integer" />
+    <aura:attribute name="keydownIndex" type="integer" default="-1" />
+    
     <aura:handler name="init" value="{!this}" action="{!c.init}"/>
     <div style="background: linear-gradient(225deg,#555 0,#000 100%);color:white;">
         <!-- HEADER SECTION --><br/>
@@ -39,12 +46,26 @@
         	<tr>
             	<td style="width:50%;border-right:2px solid #5c5c5c">
                     <table>                                                           
-                        <tr>                                         
+                        <tr>
                             <td style="padding-top:12px;">
                                 <span style="margin-left: 20%;">Street:</span>
-                                <input type="text"  class="slds-input" style="color:black !important;width:60%;float:right;margin-right:10px" id="s"/>              
+                                <input type="text"  class="slds-input" onkeyup="{!c.address}" onblur="{!c.hideSuggestion}" style="color:black !important;width:60%;float:right;margin-right:10px" id="s"/> 
+                                <div id="streetDropdown" class="achide" > 
+                                    <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open acshow">
+                                        <div class="slds-dropdown slds-dropdown_large" style="margin-left:8.7rem;padding-left:1.2rem;">
+                                            <ul class="slds-dropdown__list" role="menu" aria-label="Show More" style="width:27.2rem;">
+                                                <!-- CREATE THE DROPDOWN WITH THE SUGGESTIONS-->
+                                                <aura:iteration items="{!v.addresses}" var="val" indexVar="index" >
+                                                    <li class="slds-dropdown__item" role="presentation" onclick="{!c.callSuggestion}" id="{!index}">
+                                                        <span class="slds-truncate accolor" onclick="{!c.callSuggestion}" title="{!val.text}" id="{!index}">{!val.text}</span>
+                                                    </li>
+                                                </aura:iteration>                 
+                                            </ul>
+                                        </div>          
+                                    </div>
+                                </div>
                             </td>
-                        </tr>  
+                        </tr>
                         <tr>                                         
                             <td style="padding-top:12px;">
                                 <span style="margin-left: 20%;">Street 2:</span>
