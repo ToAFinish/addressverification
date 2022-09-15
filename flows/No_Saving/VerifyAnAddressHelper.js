@@ -80,5 +80,84 @@
             component.set("v.DefaultMess","false");
             component.set("v.isError","false");  
         }
-	}
+	},
+//GET THE SUGGESTIONS FROM THE SMARTYSTREET API
+    addSuggestions:function (component, event, helper,searchInfo){
+        console.log('*** in helper');
+        //THIS IS TO SHOW SUGGESTION WHEN USER TYPE IN ADDRESS STREET FIELD
+        //THIS CALLS API SUGGEST OF SMARTYSTREETS
+        
+        //ONLY DOMESTIC USA HAVE DROPDOWN WILL WORK
+        var country=document.getElementById('country').value;
+        console.log('country '+country);
+        if(country==undefined || country=='' ||
+           (country!=undefined && (country.toLowerCase()=='usa') 
+		   || country.toLowerCase().trim()=='united states'
+           || country.toLowerCase().trim()=='united states of america'
+           || country.toLowerCase().trim()=='us' )
+        ){
+            var addValue=event.target.value;   
+            var param =addValue+';'+'US'; 
+            console.log('***** param='+param); 
+            console.log('****** '+addValue); 
+            if(addValue!='' && addValue.length>3){ 
+                console.log('*** call server');
+               //GET THE SUGGESTIONS
+                var action = component.get("c.getDropdownAddresses");
+                action.setParams({
+                    "Parameters": param
+                });
+                var opts = [];
+                action.setCallback(this, function(response) {
+                    if (response.getState() == "SUCCESS") {
+                        console.log('******* THE API CALLED');
+                        console.log(JSON.stringify(response.getReturnValue()));
+                        var allValues = response.getReturnValue();
+                        console.log('allValues '+allValues);
+                        component.set('v.addresses',response.getReturnValue());
+                        
+                        //IF THERE ARE MORE THAN ONE ADDRESS THEN SHOW DROPDOWN
+                        if (allValues != undefined && allValues.length>0){
+                            console.log('allValues length '+allValues.length);
+                            var dropdownDiv=document.getElementById('streetDropdown');
+                            dropdownDiv.classList.remove("achide");
+                            dropdownDiv.classList.add("acshow");
+                        } 
+                        //HIDE THE DROPDOWN
+                        else{
+                            var dropdownDiv=document.getElementById('streetDropdown');
+                            dropdownDiv.classList.remove("acshow");
+                            dropdownDiv.classList.add("achide");
+                        }   
+                        searchInfo.timeId=undefined;
+                        component.set("v.searchInfo",searchInfo);                 
+                    }
+                });
+                $A.enqueueAction(action);
+            }
+            //IF STREET IS BLANK THEN RESET THE DROPDOWN 
+            else{
+                console.log('*** search key not full');
+                //HIDE THE DROPDOWN VALUES
+                var dropdownDiv=document.getElementById('streetDropdown');
+                dropdownDiv.classList.remove("acshow");
+                dropdownDiv.classList.add("achide");
+                //CLEAR THE DROPDOWN VALUES
+                var allValues=[];
+                component.set('v.addresses',allValues); 
+                searchInfo.timeId=undefined;
+                component.set("v.searchInfo",searchInfo);
+            }
+        }
+    },
+    //HIDE THE SUGGESTIONS IF HOVER IS REMOVED 
+    hideAutoSuggestion : function(component) {
+        console.log('hideAutoSuggestion');
+        if(document.getElementById('s')!=null){
+            console.log('hover removed');
+            var dropdownDiv=document.getElementById('streetDropdown');
+            dropdownDiv.classList.remove("acshow");
+            dropdownDiv.classList.add("achide");
+        }
+    }
 })
