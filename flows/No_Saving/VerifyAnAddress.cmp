@@ -1,14 +1,12 @@
 <aura:component  implements="lightning:availableForFlowScreens" controller="VerifyAnAddressCtr" access="global">
-    
+
     <aura:attribute name="Extra" type="String" access="global" default="NO"/>
-    
     <aura:attribute name="canPause" type="Boolean" />
     <aura:attribute name="canBack" type="Boolean" />
     <aura:attribute name="canNext" type="Boolean" />
     <aura:attribute name="canFinish" type="Boolean" />
     <aura:attribute name="doingProcess" type="Boolean" default="false"/>
     <aura:attribute name="DoneProcess" type="Boolean" default="false"/>
-    
     <aura:attribute name="blank" type="Boolean" default="false"/>
     <aura:attribute name="valid" type="Boolean" default="false"/>
     <aura:attribute name="invalid" type="Boolean" default="false"/>
@@ -19,14 +17,14 @@
     <aura:attribute name="Street1" type="string"/>
     <aura:attribute name="Street2" type="string"/>
     <aura:attribute name="Rest" type="string"/>
-    
+
     <!-- THE SUGGESTED ADDRESSES-->
     <aura:attribute name="addresses" type="object"/>
     <aura:attribute name="index" type="string"/>
     <aura:attribute name="searchInfo" type="object" />
     <aura:attribute name="liIndex" type="integer" />
     <aura:attribute name="keydownIndex" type="integer" default="-1" />
-    
+
     <aura:handler name="init" value="{!this}" action="{!c.init}"/>
     <div style="background: linear-gradient(225deg,#555 0,#000 100%);color:white;">
         <!-- HEADER SECTION --><br/>
@@ -162,7 +160,7 @@
                 </td>
             </tr>
         </table>
-      
+
         <aura:if isTrue="{!v.doingProcess}">
             <div class="demo-only" style="height:2px;">
                 <div role="status" class="slds-spinner slds-spinner_medium">
@@ -172,9 +170,9 @@
                 </div>
             </div>
         </aura:if>
-        
+
         <div aura:id="actionButtonBar" class="slds-clearfix slds-p-top_medium" style="padding-bottom:10px;">
-            
+
             <div class="slds-float_left">
                 <aura:if isTrue="{!v.canBack}">
                     <lightning:button aura:id="BACK" label="Previous"
