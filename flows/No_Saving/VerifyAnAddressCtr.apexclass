@@ -1,7 +1,11 @@
-global class VerifyAnAddressCtr{
-  
+global class VerifyAnAddressCtr {
+  public class autocompleteException extends Exception {}
     @AuraEnabled
     global static smartystreets.AutoComplete.theResult getTheAddress(string street,string street2,string city,string state,string country,string zip){
          return smartystreets.AutoComplete.getTheAddress(street,street2,city,state,country,zip);
+    }
+    @AuraEnabled
+    global static List<smartystreets.AutoComplete.addresses> getDropdownAddresses(string Parameters){
+        return smartystreets.AutoComplete.getaddresses(Parameters);
     }
 }
