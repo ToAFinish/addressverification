@@ -1,32 +1,34 @@
 public class UpdateAddressFromFlowController{
-    
-    
+
     @AuraEnabled
     public static list<SmartyStreets.AutoComplete.allAddress> getallAddressRowWise (string recordId){
         return SmartyStreets.AutoComplete.getallAddressRowWise(recordid);
     }        
-    
+
     @AuraEnabled
     public static List <SmartyStreets.AutoComplete.addresses>  getaddresses(string prefix){
         return SmartyStreets.AutoComplete.getaddresses(prefix);
     }
     
     @AuraEnabled
+    public static List<smartystreets.AutoComplete.addresses> getDropdownAddresses(string Parameters){
+        return smartystreets.AutoComplete.getaddresses(Parameters);
+    }
+
+    @AuraEnabled
     public static string getpostalcode(string street,string street2,string city,string state,string country,string zip){
         return SmartyStreets.AutoComplete.getpostalcode(street,street2,city,state,country,zip);
     }
-   
-   
-   
+
     @AuraEnabled
     public static void getUpdateOnAddress(string recordid,string addresswrapper){
-       
+
         if(!string.isBlank(addresswrapper) && !string.isBlank(recordid)){           
             id rId=id.valueof(recordId);
             String objectName = rId.getSObjectType().getDescribe().getName();
             sobject obj=rId.getSObjectType().newSobject(rId);            
             List<SmartyStreets.AutoComplete.allAddress> alladdress =  (List<SmartyStreets.AutoComplete.allAddress>) System.JSON.deserialize(addresswrapper,List<SmartyStreets.AutoComplete.allAddress>.class);
-           
+
             for(SmartyStreets.AutoComplete.allAddress row:alladdress){
                 for(SmartyStreets.AutoComplete.sObjectAddresses afv:row.onerow){
                     if(!afv.IsSelectedToVerify){
@@ -35,28 +37,25 @@ public class UpdateAddressFromFlowController{
                         obj.put(afv.statefield,afv.statevalue);
                         obj.put(afv.countryfield,afv.countryvalue);
                         obj.put(afv.postalcodefield,afv.postalcodevalue);
-                                                             
+
                         if(afv.street2Enabled){
                             obj.put(afv.street2field,afv.street2value);
                         }
                     }
-                    
+
                     if(afv.DoNotVerifyField!=null && afv.DoNotVerifyField!=''){
                         obj.put(afv.DoNotVerifyField,afv.IsSelectedToVerify);
                     }
                 }
             }
             update obj;
-            
         }
     }
-    
+
     @AuraEnabled
     public static void getverified(string recordid){
         id rId=id.valueof(recordId);
         String objectName = rId.getSObjectType().getDescribe().getName();    
         SmartyStreets.AddressUpdateService.UpdateAddress_v2(objectName,string.valueof(rid));        
     }
-   
-    
 }
