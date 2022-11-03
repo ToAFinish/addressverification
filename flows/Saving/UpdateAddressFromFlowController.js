@@ -46,19 +46,167 @@
         });
         $A.enqueueAction(action);
 	},
+    
+    closeselection: function(component, event, helper) {
+        component.set("v.autocompleteEntries",false);
+        component.set("v.search",undefined);
+        component.set("v.searchtext",undefined);
+        var index=component.get('v.index'); 
+        var dropdownDiv=document.getElementById('streetDropdown');
+        dropdownDiv.classList.remove("acshow");
+        dropdownDiv.classList.add("achide");
+    },
+    
+    getselected : function(component, event, helper) {
+        let addresse=event.getParam('theAddress');
+        console.log(JSON.stringify(addresse));
+        component.set("v.autocompleteEntries",false);
+        component.set("v.search",undefined);
+        component.set("v.searchtext",undefined);
+        var index=component.get('v.index');    
+        //SET THE FIELD VALUES FROM THE SELECTED OPTION    
+        document.getElementById('city'+index).value=addresse.city;
+        document.getElementById('state'+index).value=addresse.state;
+        document.getElementById('s'+index).value=addresse.street_line;
+        document.getElementById('zip'+index).value=addresse.zipcode;
+        
+        //HIDE THE DROPDOWN OPTION AFTER SELECTED
+        //document.getElementById('street'+index).style.display='none';
+        var dropdownDiv=document.getElementById('streetDropdown');
+        dropdownDiv.classList.remove("acshow");
+        dropdownDiv.classList.add("achide");
+        component.set("v.stopSubmit",false);
+        
+        //CLEAR THE ADDRESS OPTINS 
+        var allValues=[];
+        component.set('v.addresses',allValues);  
+        
+        //CHECK IF DO NOT VERIFY IS ENABLED,THE PAID AUTOCOMPLETE IS USED
+        var doNotVerify=component.get("v.doNotVerify");       
+        if(doNotVerify==true){
+            //GET ALL THE ADDRESSES
+            var allAddresses=component.get('v.sObjaddresses');
+            for(var l=0;l<allAddresses.length;l++){
+                var oneRow=allAddresses[l].oneRow;
+                for(var j=0;j<oneRow.length;j++){
+                    //IF CURRENT ADDRESS INDEX IS MATCH WITH ADDRESS OBJECT
+                    if(oneRow[j].Index==index){
+                        //UPDATE THE VARIABLE SO THAT NO NEED TO VERIFY OR CHECK LATER
+                        oneRow[j].updateVerified=true;
+                    }
+                }
+            }
+            console.log('******** PAID SUGGESTION SELECTED ');
+            console.log(JSON.stringify(allAddresses));
+        }
+	},
+    
     callSuggestion: function(component, event, helper){
-         var index=component.get('v.index');
-         var addresses=component.get('v.addresses');
-         document.getElementById('city'+index).value=addresses[event.target.id].city;
-         document.getElementById('state'+index).value=addresses[event.target.id].state;
-         document.getElementById('s'+index).value=addresses[event.target.id].street_line;
-         document.getElementById('street'+index).style.display='none';     
-         var allValues=[];
-         component.set('v.addresses',allValues);        
+        console.log('in call suggestion');
+        //GET ALL THE ADDRESSES
+        var addresses=component.get('v.addresses');
+        
+        var index = component.get('v.index');
+        var country= document.getElementById('country'+index).value;
+        console.log('country JS '+country);        	
+        console.log('INDEX'+index);
+        
+        console.log('addresses[event.target.id].isSelect '+addresses[event.target.id].isSelect);
+        console.log('addresses[event.target.id].search '+addresses[event.target.id].search);
+        console.log('addresses[event.target.id].selected '+addresses[event.target.id].selected);
+        
+        //CHECK IF ADDRESS HAVE ENTRIES TO SELECT
+        if(addresses[event.target.id].isSelect){
+            //SHOW MORE OPTION
+            component.set("v.autocompleteEntries",true);
+            component.set("v.search",addresses[event.target.id].search);
+            component.set("v.searchtext",addresses[event.target.id].selected);
+            return;
+        }
+        
+        //SET THE FIELD VALUES FROM THE SELECTED OPTION   
+        if(country==undefined || country=='' || (country!=undefined && (country.toLowerCase()=='usa') || country.toLowerCase().trim()=='united states' 
+           || country.toLowerCase().trim()=='united states of america' || country.toLowerCase().trim()=='us'))
+        {   
+            console.log('street '+addresses[event.target.id].street_line);
+            console.log('city '+addresses[event.target.id].city);
+            console.log('state '+addresses[event.target.id].state);
+            console.log('zipcode '+addresses[event.target.id].zipcode);
+            document.getElementById('s'+index).value=addresses[event.target.id].street_line;
+            document.getElementById('city'+index).value=addresses[event.target.id].city;
+            document.getElementById('state'+index).value=addresses[event.target.id].state;
+            document.getElementById('zip'+index).value=addresses[event.target.id].zipcode;
+            document.getElementById('country'+index).value='USA';
+        }else{
+            console.log('inside ELSE');
+            document.getElementById('s'+index).value=addresses[event.target.id].street;	
+            document.getElementById('city'+index).value=addresses[event.target.id].locality;
+            document.getElementById('state'+index).value=addresses[event.target.id].administrative_area;
+            document.getElementById('zip'+index).value=addresses[event.target.id].postal_code;
+        }
+        
+        //HIDE THE DROPDOWN OPTION AFTER SELECTED
+        var dropdownDiv=document.getElementById('streetDropdown');
+        dropdownDiv.classList.remove("acshow");
+        dropdownDiv.classList.add("achide");
+        
+        //CLEAR THE ADDRESS OPTINS 
+        var allValues=[];
+        component.set('v.addresses',allValues);
     },
+    
     address: function(component, event, helper){
-        helper.addSuggestions(component, event, helper);
+        console.log('**** inside Address JS');
+        
+        if (event.keyCode === 13) {
+            event.preventDefault(); 
+            var liIndex=component.get("v.liIndex");
+            if(liIndex!=undefined &&  document.getElementById(liIndex)!=undefined){
+                document.getElementById(liIndex).click();
+            }
+        }else{
+            var searchInfo =component.get('v.searchInfo');
+            console.log(JSON.stringify(searchInfo));
+            if(searchInfo!=undefined){
+                var timeId=searchInfo.timeId;
+                var text=searchInfo.text;
+                var addValue=event.target.value; 
+
+                if(addValue==text || (addValue!=undefined && text!=undefined && addValue.trim()==text.trim() )){
+                    //DO NOTHING
+                    console.log('***** same do nothing');
+                }else{
+                    component.set("v.keydownIndex",-1);
+                    console.log('****** get addresses')
+                    if(timeId!=undefined){
+                        console.log('*** if last one is not finished then stop and queue another');
+                        clearTimeout(timeId);
+                    }
+                    timeId= window.setTimeout(
+                        $A.getCallback(function() {
+                            helper.addSuggestions(component, event, helper,searchInfo);
+                        }), 300
+                    );
+                    searchInfo.timeId=timeId;
+                    searchInfo.text=addValue;
+                    component.set("v.searchInfo",searchInfo);
+                }
+            }else{
+                component.set("v.keydownIndex",-1);
+                searchInfo={};
+                searchInfo.text=event.target.value;
+                timeId= window.setTimeout(
+                    $A.getCallback(function() {
+                        helper.addSuggestions(component, event, helper,searchInfo);
+                    }), 300
+                );
+
+                searchInfo.timeId=timeId;
+                component.set("v.searchInfo",searchInfo);
+            }
+        }
     },
+    
     handleVerify: function(component, event, helper){
         
         component.set('v.doingProcess','true');
@@ -108,21 +256,6 @@
         verifiedIndex=parseInt(verifiedIndex)+1;
         component.set('v.verifiedindex',verifiedIndex);
         
-       // TO SKIP ADDRESSES WHICH ARE SET TO OFF FROM SETTING ON BAD ADDRESS
-        /**
-        var theOffIndexes= component.get("v.offAddressVerification");
-        var isFound='false';
-        for(var k=0;k<theOffIndexes.length;k++){
-            if(verifiedIndex==theOffIndexes[k]){
-                document.getElementById("usi").style.display='none';
-                isFound='true';
-            }
-        }
-        if(isFound=='false'){
-            document.getElementById("usi").style.display='';
-        }
-         **/
-        
         if(verifiedIndex<noOfaddress){
             helper.getpostal(component,event,helper);
         }else{                     
@@ -144,6 +277,14 @@
             }
         });
         $A.enqueueAction(action);
+    },
+    //HIDE THE SUGGESTIONS IF HOVER IS REMOVED 
+    hideSuggestion: function(component, event, helper){
+        console.log('hideSuggestion');
+        window.setTimeout(
+            $A.getCallback(function() {
+                helper.hideAutoSuggestion(component);
+            }), 200
+        );
     }
-    
 })
