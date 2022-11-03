@@ -1,5 +1,5 @@
 <aura:component implements="lightning:availableForFlowScreens" access="global" controller="UpdateAddressFromFlowController">
-    
+
     <aura:attribute name="recordId" type="String" access="global" />
     <aura:attribute name="sObjaddresses" type="object[]"/>
     <aura:attribute name="addresses" type="object"/>
@@ -10,7 +10,14 @@
     <aura:attribute name="readyToMove" type="Boolean" default="false"/>
     <aura:attribute name="doingProcess" type="Boolean" default="false"/>
     <aura:attribute name="DoneProcess" type="Boolean" default="false"/>
+    <aura:attribute name="liIndex" type="integer" />
+    <aura:attribute name="searchInfo" type="object" />
+    <aura:attribute name="keydownIndex" type="integer" default="-1" />
     
+    <aura:attribute name="autocompleteEntries" type="boolean" default="false"/>
+    <aura:attribute name="search" type="string" />
+    <aura:attribute name="searchtext" type="string" />
+
     <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
     <!-- HEADER SECTION -->
     <div class="slds-p-top_medium slds-clearfix">
@@ -23,7 +30,7 @@
             </aura:if>
         </div>
     </div>
-    
+
     <!-- MAIN CONTENT-->
     <aura:if isTrue="{!v.Error2}">
         <div style="color:red;font-size:15px;margin-bottom:5px;"><center><i>Please Configure Address From Setup</i></center></div>
@@ -35,20 +42,21 @@
                     <aura:iteration items="{!firstRow.oneRow}" var="val">                                
                         <td style="{!val.style+';vertical-align:top'}">
                             <table>                                                   
-                                <tr>                                         
+                                <tr>                                       
                                     <td style="padding-top:8px;"><label for="input-171" class="slds-form-element__label slds-no-flex">{!val.heading}&nbsp;Street</label>
-                                        <input type="text" value="{!val.streetvalue}" class="slds-input" id="{!'s'+val.Index}" onkeyup="{!c.address}"/>
-                                        <div id="{!'street'+val.Index}" style="display:none">
-                                            <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open" style="display:block !important">
-                                                <div class="slds-dropdown slds-dropdown_left"><!--style="margin-top:-14px;"-->
-                                                    <ul class="slds-dropdown__list" role="menu" aria-label="Show More">
-                                                        <aura:iteration items="{!v.addresses }" var="val" indexVar="index">
-                                                            <li class="slds-dropdown__item" role="presentation">
-                                                                <span class="slds-truncate" onclick="{!c.callSuggestion}"  title="Menu Item One" id="{!index}">{!val.text}</span>
+                                        <input type="text" value="{!val.streetvalue}" class="slds-input" id="{!'s'+val.Index}" onkeyup="{!c.address}" onblur="{!c.hideSuggestion}"/>
+                                        <div id="streetDropdown" class="achide"> 
+                                            <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open acshow">
+                                                <div id="streetDropdownPanel" class="slds-dropdown slds-dropdown_large dropDownCss0">
+                                                    <ul class="slds-dropdown__list" role="menu" aria-label="Show More"> 
+                                                        <!-- CREATE THE DROPDOWN WITH THE SUGGESTIONS-->
+                                                        <aura:iteration items="{!v.addresses}" var="val" indexVar="index" >
+                                                            <li class="slds-dropdown__item" role="presentation" id="{!index}">
+                                                                <span class="slds-truncate accolor" onclick="{!c.callSuggestion}" title="{!val.text}" id="{!index}">{!val.text}</span>
                                                             </li>
                                                         </aura:iteration>                 
                                                     </ul>
-                                                </div>          
+                                                </div>
                                             </div>
                                         </div>
                                     </td>
@@ -104,7 +112,13 @@
                         </td>                            
                     </aura:iteration>
                 </tr>
-            </table>   
+            </table> 
+            
+            <!-- ADD AUTOCOMPLETE ENTRIES HERE-->
+            <aura:if isTrue="{!v.autocompleteEntries}" > 
+                <smartystreets:autocompleteEntries search="{!v.search}" searchtext="{!v.searchtext}" onselect="{!c.getselected}" oncancel="{!c.closeselection}"></smartystreets:autocompleteEntries>
+            </aura:if>
+            
             <div>
                 <div id="ErrorboxMain" style="display:none">             
                     <div role="dialog" tabindex="-1" aria-labelledby="header99" class="{!'slds-modal slds-fade-in-open '+index}">
@@ -126,11 +140,11 @@
                 </div>
             </div>
         </aura:iteration>
-        
+
         <button class="slds-button slds-button_neutral" style="display:none" id="verifyagain" onclick="{!c.reverify}">Cancel</button>
         <button class="slds-button slds-button_neutral" style="display:none" id="verifyNow" onclick="{!c.finalVerify}">Cancel</button>
         <button class="slds-button slds-button_brand"  style="display:none" id="updateit" onclick="{!c.handleVerify}">Verify and Update</button>    
-        
+
         <aura:if isTrue="{!v.doingProcess}">
             <div class="demo-only" style="height:2px;">
                 <div role="status" class="slds-spinner slds-spinner_medium">
@@ -141,7 +155,7 @@
             </div>
         </aura:if>
         <!-- FOOTER SECTION -->
-        
+
         <c:FlowFooter availableActions="{!v.availableActions}" navigateFlowEvent="{!c.handleNavigate}" readyToMove="{!v.readyToMove}" recordId="{!v.recordId}"/>
     </aura:if>
     <aura:if isTrue="{!v.DoneProcess}">
