@@ -21,7 +21,8 @@ Sample Visualforce page to verify custom object phone numbers in Salesforce Clas
 
 * AutoComplete.html
 * Autocomplete.js
-* jQueryLiveAddressMin.js
-* jQueryMin.js
+* jquery_3_4_1_Min.js
+* jquery_ui.js
+* jquery_ui_css.css
 
-Sample Visualforce page (with controller) to be used for inserting records into a custom object.  Uses the Autocomplete Javascript libraries also included.
+Sample Visualforce page (with controller) to be used for inserting records into a custom object.  Uses the Autocomplete Javascript libraries also included. This has been now updated to work with Autocomplete Pro, but it has several nuances.  Please see this video: https://www.loom.com/share/15ec9476d2894dc881ab311c0adbea36
