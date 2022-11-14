@@ -1,235 +1,231 @@
-global with sharing class OfficeAutocompleteExt {
+<apex:page standardController="Office__c" extensions="OfficeAutocompleteExt">
+    <html>
+        <head>
+            <script src="{!$resource.jquery_3_4_1_Min}"></script>
+            <script src="{!$resource.jquery_ui}"></script>
+            <link rel="stylesheet" href="{!$resource.jquery_ui_css}"/>
+            <script>
+        $(function() {
 
-public Id recId;
-public smartystreets__Office__c offc{get;set;}
-public smartystreets__Office__c oldOff;
-public List<sObject> sObjList;
-global String authId{get;set;}
-global String token{get;set;}
-global String key{get;set;}
+  var menu = $(".us-autocomplete-pro-menu");
+  var input = $("#us-autocomplete-pro-address-input");
 
-    global OfficeAutocompleteExt(ApexPages.StandardController controller) {
-        
-        recId = controller.getRecord().Id;
-        if(recId<>null){
-            offc = queryRec();
+  function getSuggestions(search, selected) {
+    $.ajax({
+      url: "https://us-autocomplete-pro.api.smartystreets.com/lookup?",
+      data: {
+        "auth-id": '{!key}',
+        "search": search,
+        "selected": (selected ? selected : "")
+      },
+      dataType: "jsonp",
+      success: function(data) {
+        if (data.suggestions) {
+          buildMenu(data.suggestions);
         } else {
-            offc = new smartystreets__Office__c();
+          noSuggestions();
         }
-        sObjList = new List<sObject>();
-        
-        smartystreets__SmartySettings__c SSettings = smartystreets__SmartySettings__c.getValues('Active');
-     
-        if(SSettings.smartystreets__auth_id__c != NULL && SSettings.smartystreets__auth_token__c != NULL) {
-            authId = EncodingUtil.urlEncode(SSettings.smartystreets__auth_id__c, 'UTF-8');
-            token = EncodingUtil.urlEncode(SSettings.smartystreets__auth_token__c, 'UTF-8');
-            if(SSettings.smartystreets__Key__c != NULL){
-                key = EncodingUtil.urlEncode(SSettings.smartystreets__Key__c, 'UTF-8');
-            }
-        }     
+      },
+      error: function(error) {
+        return error;
+      }
+    });
+  }
 
+  function getSingleAddressData(address) {
+    $.ajax({
+      url: "https://us-street.api.smartystreets.com/street-address?",
+      data: {
+        "auth-id": '{!key}',
+        "street": address[0],
+        "city": address[1],
+        "state": address[2],
+          "zip": address[3],
+      },
+      dataType: "jsonp",
+      success: function(data) {
+        $("#zip").val(data[0].components.zipcode);
+      },
+      error: function(error) {
+        return error;
+      }
+    });
+  }
+
+  function clearAddressData() {
+    $("#city").val("");
+    $("#state").val("");
+    $("#zip").val("");
+  }
+
+  function noSuggestions() {
+    var menu = $(".us-autocomplete-pro-menu");
+    menu.empty();
+    menu.append("<li class='ui-state-disabled'><div>No Suggestions Found</div></li>");
+    menu.menu("refresh");
+  }
+
+  function buildAddress(suggestion) {
+    var whiteSpace = "";
+    if (suggestion.secondary || suggestion.entries > 1) {
+      if (suggestion.entries > 1) {
+        suggestion.secondary += " (" + suggestion.entries + " more entries)";
+      }
+      whiteSpace = " ";
     }
+    var address = suggestion.street_line + whiteSpace + suggestion.secondary + " " + suggestion.city + ", " + suggestion.state + " " + suggestion.zipcode;
+    var inputAddress = $("#us-autocomplete-pro-address-input").val();
+    for (var i = 0; i < address.length; i++) {
+      var theLettersMatch = typeof inputAddress[i] == "undefined" || address[i].toLowerCase() !== inputAddress[i].toLowerCase();
+      if (theLettersMatch) {
+        address = [address.slice(0, i), "<b>", address.slice(i)].join("");
+        break;
+      }
+    }
+    return address;
+  }
+  
+  
     
-    global void saveOffcRec(){
-        if(recId==null){
-           try{
-               insert offc;
-               recId = offc.id;
-           } catch(Exception e){
-               ApexPages.addMessages(e);
+  function buildMenu(suggestions) {
+    var menu = $(".us-autocomplete-pro-menu");
+    menu.empty();
+    suggestions.map(function(suggestion) {
+      var caret = (suggestion.entries > 1 ? "<span class=\"ui-menu-icon ui-icon ui-icon-caret-1-e\"></span>" : "");
+      menu.append("<li><div data-address='" +
+        suggestion.street_line + (suggestion.secondary ? " " + suggestion.secondary : "") + ";" +
+        suggestion.city + ";" +
+        suggestion.state + "'>" +
+        caret +
+        buildAddress(suggestion) + "</b></div></li>");
+    });
+    menu.menu("refresh");
+  }
+
+  $(".us-autocomplete-pro-menu").menu({
+    select: function(event, ui) {
+      var text = ui.item[0].innerText;
+      var address = ui.item[0].childNodes[0].dataset.address.split(";");
+      var searchForMoreEntriesText = new RegExp(/(?:\ more\ entries\))/);
+      input.val(address[0]);
+      $("#city").val(address[1]);
+      $("#state").val(address[2]);
+
+      if (text.search(searchForMoreEntriesText) == "-1") {
+        $(".us-autocomplete-pro-menu").hide();
+        getSingleAddressData(address);
+      } else {
+        $("#us-autocomplete-pro-address-input").val(address[0] + " ");
+        var selected = text.replace(" more entries", "");
+        selected = selected.replace(",", "");
+        getSuggestions(address[0], selected);
+      }
+    }
+  });
+
+  $("#us-autocomplete-pro-address-input").keyup(function(event) {
+    if (input.val().length > 0 || input.val() === "") clearAddressData();
+    if (event.key === "ArrowDown") {
+      menu.focus();
+      menu.menu("focus", null, menu.menu().find(".ui-menu-item"));
+    } else {
+      var textInput = input.val();
+      if (textInput) {
+        menu.show();
+        getSuggestions(textInput);
+      } else {
+        menu.hide();
+      }
+    }
+  });
+
+  $(".us-autocomplete-pro-menu").css("width", ($("#us-autocomplete-pro-address-input").width() + 200) + "px")
+
+});
+        </script>
+        <script>
+            function changeAddress(){
+               var city = document.getElementById('city').value ;
+               var street = document.getElementById('us-autocomplete-pro-address-input').value ;
+               var state = document.getElementById('state').value ;
+               var country = document.getElementById('country').value ;
+               var zip = document.getElementById('zip').value ;
+              
+               document.getElementById('{!$Component.frm.hiddenCity}').value = city;
+               document.getElementById('{!$Component.frm.hiddenStreet}').value = street;
+               document.getElementById('{!$Component.frm.hiddenZip}').value = zip;
+               document.getElementById('{!$Component.frm.hiddenCountry}').value = country;
+               document.getElementById('{!$Component.frm.hiddenState}').value = state;
+                                     
            }
-       }
-    }
+        </script>
     
-    
-    global pageReference saveRec(){
-
-        if(recId<>null){
-            oldOff = queryRec();
-        } else {
-           oldOff = new smartystreets__Office__c();
-        }
-        smartystreets__Office__c newOff = new smartystreets__Office__c();
-        newOff = offc;
-        newOff.id = recId;
-        system.debug('OIldLd: '+oldOff);
-        
-        // Verify Address only if it has been changed or wasn't verified before  
-        if(oldOff.smartystreets__Address_Verified__c==false){
-            system.debug('IF:');
-            newOff.smartystreets__Address_Verified__c = false;
-            newOff.smartystreets__Do_Not_Verify__c = false;
-            sObjList.add(newOff);
-            callVerifyAddress(recId,sObjList,oldOff);
-        } 
-        else if(((newOff.smartystreets__Street__c!=oldOff.smartystreets__Street__c) || (newOff.smartystreets__City__c!=oldOff.smartystreets__City__c) || (newOff.smartystreets__State__c!=oldOff.smartystreets__State__c)) && (oldOff.smartystreets__Address_Verified__c==true)){
-            system.debug('ELSE:');
-            newOff.smartystreets__Address_Verified__c = false;
-            newOff.smartystreets__Do_Not_Verify__c = false;
-            sObjList.add(newOff);
-            callVerifyAddress(recId,sObjList,oldOff);
-        } else {
-            upsert offc;
-        }
-                
-        /* if(pageController.saveAndNew==true){
-            Schema.DescribeSObjectResult cfrSchema = Schema.SObjectType.smartystreets__Office__c; 
-            Map<String,Schema.RecordTypeInfo> OfficeRecordTypeInfo = cfrSchema.getRecordTypeInfosByName();        
-            if(OfficeRecordTypeInfo.keySet().size()==1){
-               return new pageReference('/apex/Newsmartystreets__Office__cOverride'); 
-            } else {
-               return new pageReference('/setup/ui/recordtypeselect.jsp?ent=smartystreets__Office__c&retURL=/00Q/o&save_new_url=/00Q/e');
-           }
-        } else { */
-            PageReference pg = new pageReference('/'+recId);
-            pg.setRedirect(true);
-            return pg;
-        // }
-        
-    }
-    
-    public static void callVerifyAddress(Id OffcId,List<sObject> ObjList, smartystreets__Office__c oLead){
-        system.debug('oOffc '+oLead);
-        pageReference pv;
-        system.debug('ObjList: '+ObjList);
-        String recId = OffcId;
-        smartystreets.AddressUpdateService.VerifyAddress('Office__c',recId,ObjList); 
-    }
-    
-    public smartystreets__Office__c queryRec(){
-        Set < String > fieldSet = new Set < String > ();
-        // GET THE ADDRESS FIELD NAMES
-        smartystreets__SmartySSA__c s = smartystreets__SmartySSA__c.getValues('Office__c');
-
-        If(s.smartystreets__Street__c != NULL && s.smartystreets__Street__c.trim() != '') {
-            fieldSet.add(s.smartystreets__Street__c);
-        }
-        If(s.smartystreets__City__c != NULL && s.smartystreets__City__c.trim() != '') {
-            fieldSet.add(s.smartystreets__City__c);
-        }
-        If(s.smartystreets__State__c != NULL && s.smartystreets__State__c.trim() != '') {
-            fieldSet.add(s.smartystreets__State__c);
-        }
-        If(s.smartystreets__Zip_Code__c != NULL && s.smartystreets__Zip_Code__c.trim() != '') {
-            fieldSet.add(s.smartystreets__Zip_Code__c);
-        }
-        If(s.smartystreets__Country__c != NULL && s.smartystreets__Country__c.trim() != '') {
-           fieldSet.add(s.smartystreets__Country__c);
-        }
-        If(s.smartystreets__Street2__c != NULL && s.smartystreets__Street2__c.trim() != '') {
-            fieldSet.add(s.smartystreets__Street2__c);
-        }
-        If(s.smartystreets__County__c != NULL && s.smartystreets__County__c.trim() != '') {
-            fieldSet.add(s.smartystreets__County__c);
-        }
-        If(s.smartystreets__County_FIPs_Code__c != NULL && s.smartystreets__County_FIPs_Code__c.trim() != '') {
-            fieldSet.add(s.smartystreets__County_FIPs_Code__c);
-        }
-        If(s.smartystreets__Barcode__c != NULL && s.smartystreets__Barcode__c.trim() != '') {
-            fieldSet.add(s.smartystreets__Barcode__c);
-        }
-        If(s.smartystreets__Urbanization__c != NULL && s.smartystreets__Urbanization__c.trim() != '') {
-            fieldSet.add(s.smartystreets__Urbanization__c);
-        }
-        If(s.smartystreets__Unit__c != NULL && s.smartystreets__Unit__c.trim() != '') {
-            fieldSet.add(s.smartystreets__Unit__c);
-        }
-        If(s.smartystreets__Return_Code__c != NULL && s.smartystreets__Return_Code__c.trim() != '') {
-            fieldSet.add(s.smartystreets__Return_Code__c);
-        }
-        If(s.smartystreets__Footnotes__c != NULL && s.smartystreets__Footnotes__c.trim() != '') {
-           fieldSet.add(s.smartystreets__Footnotes__c);
-        }
-        If(s.smartystreets__Verified__c != NULL && s.smartystreets__Verified__c.trim() != '') {
-           fieldSet.add(s.smartystreets__Verified__c);
-        }
-        If(s.smartystreets__Last_Verified__c != NULL && s.smartystreets__Last_Verified__c.trim() != '') {
-           fieldSet.add(s.smartystreets__Last_Verified__c);
-        }
-        If(s.smartystreets__Latitude__c != NULL && s.smartystreets__Latitude__c.trim() != '') {
-            fieldSet.add(s.smartystreets__Latitude__c);
-        }
-        If(s.smartystreets__Longitude__c != NULL && s.smartystreets__Longitude__c.trim() != '') {
-            fieldSet.add(s.smartystreets__Longitude__c);
-        }
-        If(s.smartystreets__RDI__c != NULL && s.smartystreets__RDI__c.trim() != '') {
-            fieldSet.add(s.smartystreets__RDI__c);
-        }
-        If(s.smartystreets__Do_Not_Verify__c != NULL && s.smartystreets__Do_Not_Verify__c.trim() != '') {
-            fieldSet.add(s.smartystreets__Do_Not_Verify__c);
-        }
-        If(s.smartystreets__Record_Type__c != NULL && s.smartystreets__Record_Type__c.trim() != '') {
-            fieldSet.add(s.smartystreets__Record_Type__c);
-        }
-        If(s.smartystreets__Carrier_Route__c != NULL && s.smartystreets__Carrier_Route__c.trim() != '') {
-            fieldSet.add(s.smartystreets__Carrier_Route__c);
-        }
-        If(s.smartystreets__Congressional_District__c != NULL && s.smartystreets__Congressional_District__c.trim() != '') {
-            fieldSet.add(s.smartystreets__Congressional_District__c);
-        }
-        If(s.smartystreets__Time_Zone__c != NULL && s.smartystreets__Time_Zone__c.trim() != '') {
-            fieldSet.add(s.smartystreets__Time_Zone__c);
-        }
-        If(s.smartystreets__DST__c != NULL && s.smartystreets__DST__c.trim() != '') {
-            fieldSet.add(s.smartystreets__DST__c);
-        }
-        If(s.smartystreets__Is_Vacant__c != NULL && s.smartystreets__Is_Vacant__c.trim() != '') {
-           fieldSet.add(s.smartystreets__Is_Vacant__c);
-        }
-        If(s.smartystreets__Is_Active__c != NULL && s.smartystreets__Is_Active__c.trim() != '') {
-            fieldSet.add(s.smartystreets__Is_Active__c);
-        }
-        
-        If(s.smartystreets__Organization__c != NULL && s.smartystreets__Organization__c.trim() != '') {
-            fieldSet.add(s.smartystreets__Organization__c);
-        }
-        If(s.smartystreets__Premise__c != NULL && s.smartystreets__Premise__c.trim() != '') {
-            fieldSet.add(s.smartystreets__Premise__c);
-        }
-        If(s.smartystreets__Premise_Extra__c != NULL && s.smartystreets__Premise_Extra__c.trim() != '') {
-           fieldSet.add(s.smartystreets__Premise_Extra__c);
-        }
-        If(s.smartystreets__Sub_Building_Number__c != NULL && s.smartystreets__Sub_Building_Number__c.trim() != '') {
-           fieldSet.add(s.smartystreets__Sub_Building_Number__c);
-        }
-        If(s.smartystreets__Sub_Building_Number__c != NULL && s.smartystreets__Sub_Building_Type__c.trim() != '') {
-            fieldSet.add(s.smartystreets__Sub_Building_Type__c);
-        }
-        If(s.smartystreets__super_administrative_area__c != NULL && s.smartystreets__super_administrative_area__c.trim() != '') {
-            fieldSet.add(s.smartystreets__super_administrative_area__c);
-        }
-        If(s.smartystreets__Thoroughfare_Name__c != NULL && s.smartystreets__Thoroughfare_Name__c.trim() != '') {
-            fieldSet.add(s.smartystreets__Thoroughfare_Name__c);
-        }
-        If(s.smartystreets__Geocode_Precision__c != NULL && s.smartystreets__Geocode_Precision__c.trim() != '') {
-            fieldSet.add(s.smartystreets__Geocode_Precision__c);
-        }
-        If(s.smartystreets__Administrative_Area__c != NULL && s.smartystreets__Administrative_Area__c.trim() != '') {
-           fieldSet.add(s.smartystreets__Administrative_Area__c);
-        }
-        If(s.smartystreets__Address_Precision__c != NULL && s.smartystreets__Address_Precision__c.trim() != '') {
-            fieldSet.add(s.smartystreets__Administrative_Area__c);
-        }
-        If(s.smartystreets__Verification_Used__c!= NULL && s.smartystreets__Verification_Used__c.trim() != '') {
-            fieldSet.add(s.smartystreets__Verification_Used__c);
-        }
-        // end
-        
-        String sQuerySets ='';
-        // creating soql query
-        if(!fieldSet.isEmpty()){
-            for(String field:fieldSet){
-                    if(field != null && field != '')
-                        sQuerySets =sQuerySets == ''? field: sQuerySets+','+field;
-            }
-        }
-        
-        String sQuery = 'Select ' + sQuerySets + ', Name, Id ' + 'From smartystreets__Office__c where Id=\''+recId+'\'';
-        
-        system.debug('Squery: '+sQuery );
-        smartystreets__Office__c led = Database.query(sQuery);
-        return led;
-        
-    }
-
-}
+        </head>
+        <body>      
+            <apex:pageMessages ></apex:pageMessages> 
+            <apex:form id="frm">
+                <apex:actionFunction name="callSaveRec" action="{!saveRec}"/>
+                <apex:inputHidden value="{!offc.City__c}" id="hiddenCity" />
+                <apex:inputHidden value="{!offc.Street__c}" id="hiddenStreet" />
+                <apex:inputHidden value="{!offc.State__c}" id="hiddenState" />
+                <apex:inputHidden value="{!offc.Country__c}" id="hiddenCountry" />
+                <apex:inputHidden value="{!offc.Zip__c}" id="hiddenZip" />
+                <apex:pageBlock mode="Edit" id="pb">
+                    <apex:pageBlockSection columns="1" title="Information" id="pbs">   
+                        <apex:inputField value="{!offc.name}" required="true"/>
+                        <form>
+                            <table class="detailList" border="0" cellpadding="0" cellspacing="0" style="margin-left:-10px;">
+                                <tbody>
+                                    <tr>
+                                        <th class="labelCol vfLabelColTextWrap">
+                                            <label>Country</label>
+                                        </th>
+                                        <td class="data2Col">
+                                            <input type="text" id="country" value="{!offc.Country__c}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="labelCol vfLabelColTextWrap  first ">
+                                            <label>Street</label>
+                                        </th>
+                                        <td class="data2Col  first ">
+                                            <input type="text" value="{!offc.Street__c}" id="us-autocomplete-pro-address-input" autocomplete="smartystreets"/>
+                                            <ul class="us-autocomplete-pro-menu" style="display:none;"></ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="labelCol vfLabelColTextWrap">
+                                            <label>City</label>
+                                        </th>
+                                        <td class="data2Col">
+                                            <input type="text" id="city" value="{!offc.City__c}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="labelCol vfLabelColTextWrap">
+                                            <label>State</label>
+                                        </th>
+                                        <td class="data2Col">
+                                            <input type="text" id="state" value="{!offc.State__c}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="labelCol vfLabelColTextWrap">
+                                            <label>Zip</label>
+                                        </th>
+                                        <td class="data2Col">
+                                            <input type="text" id="zip" value="{!offc.Zip__c}"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                    </apex:pageBlockSection>
+                    <apex:pageBlockButtons >
+                        <apex:commandButton action="{!saveOffcRec}" value="Save" onclick="changeAddress();" id="compSave" oncomplete="callSaveRec();"/>
+                    </apex:pageBlockButtons>
+                </apex:pageBlock>
+            </apex:form>
+        </body>
+    </html>
+</apex:page>
