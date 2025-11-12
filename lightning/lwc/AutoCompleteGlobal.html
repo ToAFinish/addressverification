@@ -1,0 +1,35 @@
+<template>
+    <lightning-card>
+        <div>
+            <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                    <div class="slds-combobox_container">
+                        <div class={txtclassname} data-id="resultBox" aria-expanded="false" aria-haspopup="listbox" role="combobox">
+                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right" role="none">
+                                Street: <lightning-input required={required} read-only={inputReadOnly} data-id="userinput" label={Label} name="searchText" onkeyup={searchField} value={street} class="leftspace"></lightning-input>
+                                  <template if:true={isDataAvailable}>  
+                                 <div>
+                                    <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open" >
+                                        <div class="slds-dropdown slds-dropdown_left">
+                                            <ul  role="menu" aria-label="Show More" >
+                                                <template for:each={searchRecords} for:item="suggestion" for:index="index">
+                                                    <li class="slds-dropdown__item" role="presentation" key={suggestion.text} >
+                                                        <span class="slds-truncate accolor" style="cursor: pointer;" onclick={useSuggestion}  title={suggestion.text} id={index} >{suggestion.text}</span>
+                                                    </li>
+                                                </template>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                  </template>
+                               City: <lightning-input value={city} class="leftspace"></lightning-input> <br/>
+                               State: <lightning-input value={state} class="leftspace"></lightning-input> <br/>
+                               Zip: <lightning-input value={zip} class="leftspace"></lightning-input> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+</template>
