@@ -14,5 +14,5 @@ In the Properties panel of the component, populate the following fields:
 * AddressString → **{!Get_Address.AddressString}**
 * AfterSave → **{!$GlobalConstant.True}**
 * recordId → **{!Lead.Id}**
-* 
+
 Note: **Get_Address** is the API name of the Aura component used for capturing the address.
