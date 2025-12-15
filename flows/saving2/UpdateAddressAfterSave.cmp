@@ -1,0 +1,13 @@
+<aura:component implements="lightning:availableForFlowScreens" controller="UpdateAddressFromFlowController" access="global" >
+    <aura:attribute name="IsAddressSuccessful" type="Boolean" default="false"/>
+    <aura:attribute name="recordId" type="String" access="global" />
+    <aura:attribute name="AddressString" type="String" access="global"/>
+    <aura:attribute name="loaded" type="Boolean" default="false" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+	<lightning:spinner variant="brand" alternativeText="Loading..." class="{!(v.loaded? 'slds-show': 'slds-hide')}" />
+
+    <aura:if isTrue="{!v.IsAddressSuccessful}">
+        <div style="margin-top:15px;padding-bottom:15px;text-align:center;font-size:15px;font-weight:bold;">Thank You, Address was saved successful!</div>
+    </aura:if>
+</aura:component>
