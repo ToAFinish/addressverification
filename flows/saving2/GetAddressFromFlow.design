@@ -1,0 +1,4 @@
+<design:component>
+    <design:attribute name="objectName"  /> 
+    <design:attribute name="AddressString"  /> 
+</design:component>
