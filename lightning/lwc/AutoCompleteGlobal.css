@@ -1,0 +1,49 @@
+.custom-container{
+	color : black;
+}
+.leftspace {
+    margin-top: 6px;
+}
+
+/* Anchor for dropdown */
+.street-relative {
+    position: relative;
+}
+
+/* Common dropdown wrapper */
+.street-dropdown-wrapper {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    z-index: 9000;
+}
+
+/* Dropdown look */
+.street-dropdown {
+    max-height: 260px;
+    overflow-y: auto;
+    background: #ffffff;
+    border: 1px solid #d8dde6;
+    border-radius: 0.25rem;
+}
+
+/* International row layout */
+.street-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Address count */
+.entry-count {
+    color: rgb(5, 12, 211);
+    font-weight: 600;
+    white-space: nowrap;
+    margin-left: 8px;
+}
+
+/* Highlight color */
+.accolor {
+    color: #080707;
+}
