@@ -1,89 +1,145 @@
 <template>
     <lightning-card>
-        <div>
-             
-            <div class="slds-form-element">
-                
-                <div class="slds-form-element__control">
-                    <div class="slds-combobox_container">
-                        <template if:true={autocompleteEntries}> 
-                            <c-autocomplete-entries search={search} searchtext={searchtext} onselect={getSelected} oncancel={closeSelection}></c-autocomplete-entries>
-                        </template>
-                        <div class={txtclassname} data-id="resultBox" aria-expanded="false" aria-haspopup="listbox" role="combobox">
-                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right" role="none">
-                                Country: <lightning-input required={required}  data-id="country" value={country} onchange={handleCountryChange}></lightning-input>
-                                Street: <lightning-input required={required} read-only={inputReadOnly} data-id="userinput" label={Label} name="searchText" onkeyup={searchField} value={street} class="leftspace"></lightning-input>
-                                <template if:true={isInternational}>
-                                    <template if:true={showSpinner}>
-                                        <lightning-spinner alternative-text="Loading"></lightning-spinner>
-                                    </template>
-                                    <template if:true={isDataAvailable}>
-                                        <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open">
-                                          <!--  <div class="slds-dropdown slds-dropdown_fluid"> -->
-                                                <ul class="slds-dropdown slds-dropdown_fluid">
-                                                    <!-- FIRST STEP LIST -->
-                                                    <template for:each={interNationalAddresList} for:item="val" for:index="index">
-                                                        <li key={val.address_id}
-                                                            class="slds-dropdown__item"
-                                                            data-index={index}
-                                                            style="padding:5px">
-                                                            <span style="display:flex;justify-content:space-between;cursor:pointer"
-                                                                data-index={index}
-                                                                onclick={finalAddressSuggestions}>
-                                                                <span class="slds-truncate accolor"
-                                                                    title={val.address_text}>
-                                                                    {val.address_text}
-                                                                </span>
-                                                                <span style="color:rgb(5,12,211);font-weight:bold">
-                                                                    +{val.entries}-Addresses
-                                                                </span>
-                                                            </span>
-                                                        </li>
-                                                    </template>
-                                                    <!-- SECOND STEP LIST -->
-                                                    <template for:each={interNationalAddresSecondStepList} for:item="val" for:index="index">
-                                                        <li key={val.address_id}
-                                                            class="slds-dropdown__item"
-                                                            data-index={index}
-                                                            onclick={finalCompleteAddressSuggestions}
-                                                            style="padding:5px">
-                                                            <span class="slds-truncate accolor"
-                                                                title={val.address_text}>
-                                                                {val.address_text}
-                                                            </span>
-                                                        </li>
-                                                    </template>
-                                                </ul>
-                                            <!--</div> -->
-                                        </div>
-                                    </template>
-                                </template>
-                               <template if:false={isInternational}>
-                                    <template if:true={isDataAvailable}>  
-                                        <div>
-                                            <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open" >
-                                                <div class="slds-dropdown slds-dropdown_left">
-                                                    <ul  role="menu" aria-label="Show More" >
-                                                        <template for:each={searchRecords} for:item="suggestion" for:index="index">
-                                                            <li class="slds-dropdown__item" role="presentation" key={suggestion.text} >
-                                                                <span class="slds-truncate accolor" style="cursor: pointer;" onclick={useSuggestion}  title={suggestion.text} id={index} >{suggestion.text}</span>
-                                                            </li>
-                                                        </template>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </template>
-                                </template>
-                               City: <lightning-input value={city} class="leftspace"></lightning-input> <br/>
-                               State: <lightning-input value={state} class="leftspace"></lightning-input> <br/>
-                               Zip: <lightning-input value={zip} class="leftspace"></lightning-input> 
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="slds-form-element" style="padding:10px;">
+            <div class="slds-form-element__control">
+                <lightning-input
+                    label="Country"
+                    value={country}
+                    onchange={handleCountryChange}>
+                </lightning-input>
 
+                <lightning-input
+                    label="Street"
+                    value={street}
+                    onkeyup={searchField}
+                    class="leftspace">
+                </lightning-input>
+
+                <template if:true={isDataAvailable}>
+                    <template if:false={isInternational}>
+                        <div class="slds-dropdown slds-dropdown_fluid slds-is-open">
+                            <ul class="slds-listbox slds-listbox_vertical">
+                                <template for:each={searchRecords} for:item="rec" for:index="index">
+                                    <li key={rec.text}
+                                        class="slds-listbox__item">
+                                        <div class="slds-media slds-media_small slds-media_center"
+                                             style="cursor:pointer"
+                                             data-index={index}
+                                             onclick={useSuggestion}>
+                                            <span class="slds-truncate">
+                                                {rec.text}
+                                            </span>
+                                        </div>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                    </template>
+                </template>
+
+                <template if:true={isInternational}>
+                    <template if:true={showSpinner}>
+                        <lightning-spinner size="small"></lightning-spinner>
+                    </template>
+
+                    <template if:true={isDataAvailable}>
+                        <div class="slds-dropdown slds-dropdown_fluid slds-is-open">
+                            <ul class="slds-listbox slds-listbox_vertical">
+
+                                <!-- FIRST STEP -->
+                                <template for:each={interNationalAddresList} for:item="val" for:index="index">
+                                    <li key={val.address_id}
+                                        class="slds-listbox__item"
+                                        data-index={index}
+                                        onclick={finalAddressSuggestions}
+                                        style="cursor:pointer">
+                                        <div class="slds-truncate">
+                                            {val.address_text}
+                                            <span style="color:#005fb2;font-weight:bold">
+                                                &nbsp;+{val.entries}-Addresses
+                                            </span>
+                                        </div>
+                                    </li>
+                                </template>
+
+                                <!-- SECOND STEP -->
+                                <template for:each={interNationalAddresSecondStepList} for:item="val" for:index="index">
+                                    <li key={val.address_id}
+                                        class="slds-listbox__item"
+                                        data-index={index}
+                                        onclick={finalCompleteAddressSuggestions}
+                                        style="cursor:pointer">
+                                        <div class="slds-truncate">
+                                            {val.address_text}
+                                        </div>
+                                    </li>
+                                </template>
+
+                            </ul>
+                        </div>
+                    </template>
+                </template>
+
+                <lightning-input label="City" value={city}></lightning-input>
+
+                <lightning-input label="State" value={state}></lightning-input>
+
+                <lightning-input label="Zip" value={zip}></lightning-input>
+
+            </div>
         </div>
     </lightning-card>
+
+    <template if:true={autocompleteEntries}>
+        <section role="dialog"
+                 class="slds-modal slds-fade-in-open slds-modal_small"
+                 aria-modal="true">
+            <div class="slds-modal__container">
+
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close"
+                            onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                    </button>
+                    <h2 class="slds-text-heading_medium">{search}</h2>
+                </header>
+
+                <div class="slds-modal__content slds-p-around_medium">
+                    <table class="slds-table slds-table_bordered slds-table_striped">
+                        <thead>
+                            <tr>
+                                <th>Street</th>
+                                <th>City</th>
+                                <th>State</th>
+                                <th>Zip</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={modalSuggestions} for:item="sug" for:index="index">
+                                <tr key={sug.street_line}
+                                    data-index={index}
+                                    onclick={rowSelected}
+                                    style="cursor:pointer">
+                                    <td>{sug.street_line}</td>
+                                    <td>{sug.city}</td>
+                                    <td>{sug.state}</td>
+                                    <td>{sug.zipcode}</td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral"
+                            onclick={closeModal}>
+                        Cancel
+                    </button>
+                </footer>
+
+            </div>
+        </section>
+
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
 </template>
