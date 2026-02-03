@@ -1,0 +1,71 @@
+<aura:component controller="smartystreets.AutoComplete" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+	<aura:attribute name="sobjectName" type="String"  access="global"/>
+    <aura:attribute name="recordTypeId" type="string" access="global" default=""/>
+    <aura:attribute name="sObjaddresses" type="object[]"/>
+    <aura:attribute name="addresses" type="object"/>
+    <aura:attribute name="TotalAddress" type="Integer" default="0"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="index" type="string"/>
+	<aura:iteration items="{!v.sObjaddresses }" var="firstRow">  
+    <div  style="height:auto;width:100% !important">
+                <div  style="width:100% !important">        
+        <div  id="modal-content-id-1">                            
+        <table style="{!firstRow.style}">
+            <tr>
+                <aura:iteration items="{!firstRow.oneRow}" var="val"> 
+                    <td style="{!val.style}">
+                        <table>                                                   
+                            <tr>                                         
+                                <td style="padding-top:8px;"><label for="input-171" class="slds-form-element__label slds-no-flex">{!val.streetLabel}</label> <!--{!val.heading}&nbsp;Street -->
+                                    <input type="text" value="{!val.streetvalue}" class="slds-input" id="{!'s'+val.Index}" onkeyup="{!c.address}" onblur="{!c.hideSuggestion}"/> <!-- onblur="{!c.hideSuggestion}" -->
+                                    <div id="{!'street'+val.Index}" style="display:none">
+                                        <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open" style="display:block !important">
+                                            <div class="slds-dropdown slds-dropdown_left"><!--style="margin-top:-14px;"-->
+                                                <ul class="slds-dropdown__list" role="menu" aria-label="Show More">
+                                                    <aura:iteration items="{!v.addresses }" var="val" indexVar="index" >
+                                                        <li class="slds-dropdown__item" role="presentation" onclick="{!c.callSuggestion}" id="{!index}">
+                                                            <span class="slds-truncate" onclick="{!c.callSuggestion}"  title="Menu Item One" id="{!index}">{!val.text}</span>
+                                                        </li>
+                                                    </aura:iteration>                 
+                                                </ul>
+                                            </div>          
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <aura:if isTrue="{!val.street2Enabled}">
+                                <tr>
+                                    <td style="padding-top:8px;">
+                                        <label for="input-171" class="slds-form-element__label slds-no-flex">{!val.street2Label}</label> <!--{!val.heading}&nbsp;Street 2 -->
+                                        <input type="text" value="{!val.street2value}" class="slds-input" id="{!'s2'+val.Index}"/>
+                                    </td>
+                                </tr>
+                            </aura:if> 
+                            <tr>                                                          
+                                <td style="padding-top:8px;"><div style="float:left;width:56%"><label for="input-171" class="slds-form-element__label slds-no-flex">{!val.cityLabel}</label> <!--{!val.heading}&nbsp;City -->
+                                    <input type="text" value="{!val.cityvalue}" class="slds-input" id="{!'city'+val.Index}" /></div>
+                                    <div style="float:right;width:42%"><label for="input-171" class="slds-form-element__label slds-no-flex">{!val.stateLabel}</label> <!--{!val.heading}&nbsp;State-->
+                                        <input type="text" value="{!val.statevalue}" class="slds-input" id="{!'state'+val.Index}"  /></div>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td style="padding-top:8px;">
+                                    <div style="float:left;width:56%"><label for="input-171" class="slds-form-element__label slds-no-flex">{!val.postalcodeLabel}</label> <!--{!val.heading}&nbsp;PostalCode -->
+                                        <input type="text" value="{!val.postalcodevalue}" class="slds-input" id="{!'zip'+val.Index}" /> </div>
+                                    <div style="float:right;width:42%"><label for="input-171" class="slds-form-element__label slds-no-flex">{!val.countryLabel}</label> <!--{!val.heading}&nbsp;Country -->
+                                        <input type="text" value="{!val.countryvalue}" class="slds-input" id="{!'country'+val.Index}"  /></div>
+                                </td>
+                            </tr>
+                            
+                        </table>
+                    </td>                            
+                </aura:iteration>
+            </tr>
+        </table>
+        </div>
+        </div>
+        </div>
+        
+    </aura:iteration>
+</aura:component>
